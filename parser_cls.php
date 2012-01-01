@@ -43,6 +43,7 @@ class parser {
 	function end_packet() {
 		if($this->packet_pointer < $this->packet_length){
 			$extra_bytes = $this->packet_length - $this->packet_pointer;
+			// should be output from mode/*.php
 			echo "$this->nl $extra_bytes bytes not analyzed\n";
 		}
 	}
@@ -177,6 +178,7 @@ class parser {
 			$this->prev_packet = false;
 			$this->prev_packet_dir = false;
 		}
+		// increase packet number, and format for output
 		$this->packet_num = str_pad(++$this->packet_num, 3, "0", STR_PAD_LEFT);
 		while(strlen($this->stream)) {
 			$this->packet_id = str_pad(strtoupper(dechex($this->unpack2("S", $this->stream))),4,"0",STR_PAD_LEFT);
@@ -198,6 +200,7 @@ class parser {
 			if (!$this->aid_packet && $this->aid && $this->unpack2("L", $this->stream) == $this->aid) {
 				//if (function_exists('GID'))
 				//	GID($this);
+				// should be output from mode/*.php
 				echo "| $this->packet_num |  $this->packet_dir  |     | Account_ID\n";
 				$this->aid_packet = true;
 				$this->stream = substr($this->stream, 4);
@@ -217,32 +220,31 @@ class parser {
 				}
 				if (strlen($this->stream) < $this->packet_length) {
 					// Packet is not complete
+					// should be output from mode/*.php
 					echo "| $this->packet_num |  $this->packet_dir  | $this->packet_id | Packet Not Complete\n";
 					$this->prev_packet = $this->stream;
 					$this->prev_packet_dir = $this->packet_dir;
 					break;
 				}
-				//echo $this->packet_dir . " " . $this->packet_id . " " . strlen($this->stream) . " " . $this->packet_length . "\n";
-				//echo bin2hex($this->stream) ."\n";
 				
-				// copy and removed single packet from stream
+				// copy and remove single packet from stream
 				$this->packet = substr($this->stream,0,$this->packet_length);
 				$this->stream = substr($this->stream,$this->packet_length);
 				
 				if(!array_key_exists($this->packet_id, $this->p_funcs)) {
 					$this->p_funcs[$this->packet_id] = "NO_FUNC_DEFINED";
 				}
+				// packet_desc should be made in mode/full_info.php - but here is fine for now
 				$this->packet_desc = str_pad($this->p_funcs[$this->packet_id], 50, " ");
 				$this->packet_desc = "| $this->packet_num |  $this->packet_dir  | $this->packet_id | $this->packet_desc |";
-				$this->packet_pointer = 2;
+				$this->packet_pointer = 2; // packet_id
 				if(function_exists($this->p_funcs[$this->packet_id])) {
 					$this->p_funcs[$this->packet_id]($this);
-					//$this->end_packet();
-				} else {
-					echo $this->packet_desc . "\n";
+					$this->end_packet();
 				}
 			} else {
-				echo "Packet length not found for $this->packet_id\n";
+				// cannot find packet length
+				die("Packet length not found for $this->packet_id\nMake sure data/packet/plen is correct for client\n\n");
 			}
 		}
 		echo $this->br;
