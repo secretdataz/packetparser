@@ -221,7 +221,7 @@ class parser {
 				if (strlen($this->stream) < $this->packet_length) {
 					// Packet is not complete
 					// should be output from mode/*.php
-					echo "| $this->packet_num |  $this->packet_dir  | $this->packet_id | Packet Not Complete\n";
+					echo "| $this->packet_num |  $this->packet_dir  | $this->packet_id | Packet Not Complete                                |\n";
 					$this->prev_packet = $this->stream;
 					$this->prev_packet_dir = $this->packet_dir;
 					break;
@@ -241,6 +241,8 @@ class parser {
 				if(function_exists($this->p_funcs[$this->packet_id])) {
 					$this->p_funcs[$this->packet_id]($this);
 					$this->end_packet();
+				} else {
+					echo $this->packet_desc . "\n";
 				}
 			} else {
 				// cannot find packet length
