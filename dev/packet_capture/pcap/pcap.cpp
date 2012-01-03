@@ -59,13 +59,13 @@ int main(int argc, char **argv) {
 	WORD wVersionRequested;
 	WSADATA wsaData;
 
-	wVersionRequested = MAKEWORD(2, 0);			// Request WinSock v2.0
-	WSAStartup(wVersionRequested, &wsaData);		// Load WinSock DLL
-	sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_IP); //Create socket
+	wVersionRequested = MAKEWORD(2, 0);					// Request WinSock v2.0
+	WSAStartup(wVersionRequested, &wsaData);			// Load WinSock DLL
+	sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);	//Create socket
 	memset(&target, 0, sizeof(target));
-	target.sin_family = AF_INET; // address family Internet
-	target.sin_port = htons (1234); //Port to connect on
-	target.sin_addr.s_addr = inet_addr ("127.0.0.1"); //Target IP
+	target.sin_family = AF_INET;						// address family Internet
+	target.sin_port = htons (1234);						//Port to connect on
+	target.sin_addr.s_addr = inet_addr ("127.0.0.1");	//Target IP
 	// set TCP_NODELAY for sure
 	//int optval = 1;
 	//setsockopt(sockfd, IPPROTO_IP, TCP_NODELAY, (char *)&optval, sizeof(optval));
@@ -75,33 +75,32 @@ int main(int argc, char **argv) {
 
 	if(argc < 3) {
 		
-		//printf("\nPrinting the device list:\n");
+		printf("\nInterface list:\n");
 		// The user didn't provide a packet source: Retrieve the local device list
 		if (pcap_findalldevs_ex(PCAP_SRC_IF_STRING, NULL, &alldevs, errbuf) == -1) {
 			fprintf(stderr,"Error in pcap_findalldevs_ex: %s\n", errbuf);
 			return -1;
 		}
-		/*
+		
 		// Print the list 
 		for(d=alldevs; d; d=d->next) {
-			printf("%d. %s\n	", ++i, d->name);
+			printf("%d. %s\n", ++i, d->name);
 
-			if (d->description)
-				printf(" (%s)\n", d->description);
-			else
-				printf(" (No description available)\n");
+			//if (d->description)
+			//	printf(" (%s)\n", d->description);
+			//else
+			//	printf(" (No description available)\n");
 		}
 		
 		if (i==0) {
 			fprintf(stderr,"No interfaces found! Exiting.\n");
 			return -1;
 		}
-		*/
-		//printf("Enter the interface number (1-%d):",i);
-		//scanf_s("%d", &inum);
 		
-		inum = 1;
-		/*
+		printf("Enter the interface number (1-%d):",i);
+		scanf_s("%d", &inum);
+		
+		//inum = 1;
 		if (inum < 1 || inum > i) {
 			printf("\nInterface number out of range.\n");
 
@@ -109,7 +108,7 @@ int main(int argc, char **argv) {
 			pcap_freealldevs(alldevs);
 			return -1;
 		}
-		*/
+		
 		// Jump to the selected adapter
 		for (d=alldevs, i=0; i< inum-1 ;d=d->next, i++);
 		

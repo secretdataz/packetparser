@@ -5,21 +5,42 @@
        Yommys Amazing Ragnarok Packet Analyzer Framework
 
 This is a REAL-TIME ragnarok packet analyzer -
-currently does not work with kRO, due to ahnLab catching the dll hook /sadface
 
-First your client needs to be patched to load wpp.dll
-in the bin folder is a patcher, just drop your client in there, and run the bat
-then copy the patched client and dll back to RO folder
-this is the only edit needed in RO folder
+There is 2 parts to the setup, Packet_forwarder and Packet_Parser -
+Packet_Forwarder captures packets from the network interface and sends to the Parser
+Packet_Parser receives packet data from the Forwarder, and outputs data from each packet
 
-The parser is seperate, the dll sends a copy of all packets to the parser using a socket on port 1234
-Parser needs to be started and waiting before Ragnarok client is loaded.
+Alternative to the Forwarder, the ro client can be patched to load wpp.dll
+
+TODO:
+* move remaining output into full_info.php
+* add a mode selection at startup
+* add a packet length file selection at startup
+* create a mode specific to capturing npc data, and output into athena script format <3
+* update plen_extract to support new clients
 
 
-/data/packet/plen
-Format:
-packet_id,length
-
-packet_id = Hex, left padded with 0.
-length    = Decimal, variable length should be set to 0, not -1 like some extractors.
-
+Packet_Parser
+|   packet_forwarding.exe	-- listens for ragnarok packets on network, and forwards to parser
+|   parser.bat				-- Run this to start the parser
+|   parser.php				-- main script, listens for socket data from forwarder / wpp.dll, and pushes to extracter
+|   parser_cls.php			-- Core Parser file, resposible for extracting packet data
+|   readme.txt				-- This file
++---data
+|   +---enum
+|   |       efst.txt		-- Status Effects
+|   |       item.txt		-- Items
+|   |       jobtype.txt		-- Jobs / Npc / Mobs / Homunc / Mercenary
+|   |       skill.txt		-- Skills
+|   |       var.txt			-- Var
+|   \---packet
+|           func.txt		-- Function list table
+|           plen.txt		-- Packet length table
++---dev
+|   +---dll_inject			-- wpp.dll and script to make client load this dll
+|   +---packet_capture		-- Source of Packet_Forwarder, using libPcap
+|   +---plen_extract		-- Extract packet length table from ro client (only vc9 linked)
+|   \---structure			-- A script to convert "extracted aegis packet structure defines" into full_mode.php
+|   
+\---mode
+        full_info.php		-- prints out all known packet data
