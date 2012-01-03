@@ -21,7 +21,7 @@ ini_set("display_errors", 1);
 	exec("p.exe $client wpp.dll");
 	rename($client.".patched", $rename."_wpp.exe");
 	echo "Copy patched client and wpp.dll to RO folder <3\n";
-	require("include/robin.class.php");
-	require("include/plen_extract.php");
+	//require("include/robin.class.php");
+	//require("include/plen_extract.php");
 	
 ?>

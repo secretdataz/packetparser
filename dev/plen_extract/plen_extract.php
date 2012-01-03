@@ -1,6 +1,27 @@
 <?php
+date_default_timezone_set('Asia/Seoul');
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+	include("robin.class.php");
+	$clients = glob("clients/*.exe");
+	if(sizeof($clients) == 0)
+		die("Place a ragnarok client into the \"clients\" folder\n");
+	
+	foreach ($clients as $i => $client) {
+		$filename = basename($client);
+		echo "$i  : $filename\n";
+	}
+	fwrite(STDOUT, "\nExtract packet_len from which client? : ");
+	$choice = trim(fgets(STDIN));
+	if (!isset($clients[$choice])){
+		die("Bad Choice\n");
+	}
+	//$client = basename($clients[$choice]);
+	
+	
 	$exe = new RObin();
-	$exe->load($client,false);
+	$exe->load($clients[$choice],false);
 	
 	$code = "\x55\x8B\xEC\x83\xE4\xF8\x83\xEC\xAB\x56\x8B\xF1\xB8";
 	$offset = $exe->code($code, "\xAB");
@@ -112,7 +133,7 @@
 	}
 	ksort($len_table);
 	echo "\n";
-	$outtxt = fopen("plen/plen_".$exe->clientdate().".txt", 'w');
+	$outtxt = fopen("plens/plen_".$exe->clientdate().".txt", 'w');
 	foreach($len_table as $key => $val) {
 		$key = strtoupper(str_pad(dechex($key), 4, "0", STR_PAD_LEFT));
 		fwrite($outtxt, "$key,$val\n");
