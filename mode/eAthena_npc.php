@@ -33,6 +33,7 @@ function echo_save($parser, $text){
 function PACKET_HC_NOTIFY_ZONESVR($parser) {
 	$parser->data['map'] = $parser->string(16, 6);
 	$parser->data['talking_to_npc'] = false;
+	$parser->data['money'] = 0;
 }
 
 function PACKET_ZC_SAY_DIALOG($parser){
@@ -56,7 +57,6 @@ function PACKET_ZC_CLOSE_DIALOG($parser){
 }
 
 function PACKET_ZC_MENU_LIST($parser){
-
 	$select = $parser->string($parser->word(2)-8,8);
 	$parser->menu_list = explode(":",":".$select); // begin with : to create a blank entry at begining
 	$parser->menu_list[255] = "cancel clicked";
@@ -82,4 +82,89 @@ function PACKET_ZC_NOTIFY_STANDENTRY6($parser){
 	//print_r($parser->npc_list[$gid]);
 }
 
+function PACKET_ZC_ADD_QUEST($parser) {
+	echo_save($parser, "\tsetquest ".$parser->long().";\n");
+}
+
+function PACKET_ZC_DEL_QUEST($parser) {
+	echo_save($parser,"\terasequest ".$parser->long().";\n");
+}
+
+function PACKET_ZC_COMPASS($parser) {
+	$naid = $parser->long();
+	$action = $parser->long();
+	$x = $parser->long();
+	$y = $parser->long();
+	$id = $parser->byte();
+	$color = $parser->long();
+	echo_save($parser,"\tviewpoint $action,$x,$y,$id,$color;\n");
+}
+
+function PACKET_ZC_SHOW_IMAGE2($parser) {
+	$imageName = $parser->string(64);
+	$type = $parser->byte();
+	echo_save($parser,"\tcutin \"$imageName\",$type;\n");
+}
+
+function PACKET_ZC_NOTIFY_EXP($parser) {
+	$AID=$parser->long();
+	$amount=$parser->long();
+	$varID=$parser->word();
+	$expType=$parser->word();
+	if($parser->data['talking_to_npc'] == false){
+		return;
+	}
+	if($expType == 1){
+		echo_save($parser, "\tgetexp $amount,0;\n");
+	}elseif($expType == 2){
+		echo_save($parser, "\tgetexp 0,$amount;\n");
+	}
+}
+
+function PACKET_ZC_ITEM_PICKUP_ACK3($parser) {
+	$Index=$parser->word();
+	$count=$parser->word();
+	$ITID=$parser->word();
+	if($parser->data['talking_to_npc'] == false){
+		return;
+	}
+	echo_save($parser,"\tgetitem $ITID,$count;\n");
+}
+
+function PACKET_ZC_OPEN_EDITDLGSTR($parser) {
+	echo_save($parser,"\tinput .@input1$;\n");
+}
+
+function PACKET_ZC_OPEN_EDITDLG($parser) {
+	echo_save($parser,"\tinput .@amount;\n");
+}
+
+function PACKET_ZC_EMOTION($parser) {
+	$GID=$parser->long();
+	$type=$parser->byte();
+	if($parser->data['talking_to_npc'] == false){
+		return;
+	}
+	echo_save($parser,"\temotion $type;\n");
+}
+
+function PACKET_ZC_LONGPAR_CHANGE($parser) {
+	$varID=$parser->word();
+	$amount=$parser->long();
+	if($varID != 20){ // money
+		return;
+	}
+	if($parser->data['money'] > 0){
+		if($parser->data['talking_to_npc'] == true){
+			$diff = $amount - $parser->data['money'];
+			if($diff < 0){
+				$diff = abs($diff);
+				echo_save($parser,"\tset zeny,zeny-$diff;\n");
+			} else {
+				echo_save($parser,"\tset zeny,zeny+$diff;\n");
+			}
+		}
+	}
+	$parser->data['money'] = $amount;
+}
 ?>
