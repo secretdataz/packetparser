@@ -4,7 +4,6 @@ error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 require("parser_cls.php");
-require("mode/full_info.php");
 
 echo "       _____         _       _      _____                      \n";
 echo "      |  _  |___ ___| |_ ___| |_   |  _  |___ ___ ___ ___ ___  \n";
@@ -18,7 +17,7 @@ $parser = new parser();
 $connected = false;		// socket connected
 $listening = true;		// socket listening
 $sock = socket_create(AF_INET,SOCK_STREAM,SOL_TCP);
-if(!@socket_bind($sock,'127.0.0.1',1234)){
+if(!@socket_bind($sock,'127.0.0.1',1234)) {
 	die("\n## Socket already in use ##\n");
 }
 socket_listen($sock);
@@ -34,9 +33,9 @@ while(true){
 		}
 	}
 
-	echo "T-----T-----T------T----------------------------------------------------T----------------------------------------------T\n";
-	echo "| Num | Way |  ID  | Packet description                                 | Extra information                            \n";
-	echo "I-----I-----I------I----------------------------------------------------I----------------------------------------------I\n";
+	if(function_exists("PP_ENTRY_TEXT")) {
+		PP_ENTRY_TEXT($parser);
+	}
 
 	while($listening){
 		if (($parser->stream = @socket_read($socket, 2048, PHP_BINARY_READ)) === false) {
@@ -46,13 +45,6 @@ while(true){
 			break;
 		}
 		if($parser->stream) {
-			if(substr($parser->stream,0,2) == "RR") {
-				$parser->packet_dir = "R";
-				$parser->stream = substr($parser->stream,2);
-			} elseif(substr($parser->stream,0,2) == "SS") {
-				$parser->packet_dir = "S";
-				$parser->stream = substr($parser->stream,2);
-			}
 			if(strlen($parser->stream)) {
 				$parser->parse_stream();
 			}

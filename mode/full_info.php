@@ -1,4 +1,41 @@
 <?php
+
+// packet_parser functions
+function PP_MODE_INIT($parser) {
+	$parser->mode["mode_name"] = "full_info";	//
+	$parser->mode["extra_bytes"] = true;		// warning about extra packet data
+	$parser->mode["debug"] = true;				// write packets to file
+	$parser->nl = "|     |     |      |                                                    |";
+	$parser->br = "|.....|.....|......|....................................................|...............................\n";
+	if($parser->mode["debug"]) {
+		$debugfilename = "debug/".date("Ymd-gis").".txt";
+		$parser->debug = fopen($debugfilename, "w");
+	}
+}
+
+function PP_FUNC_NOT_DEFINED($parser) {
+	echo $parser->packet_desc . "\n";
+}
+
+function PP_AEGIS_GID($parser) {
+	echo "| $parser->packet_num |  $parser->packet_dir  |     | Account_ID\n";
+}
+
+function PP_PACKET_SPLIT($parser) {
+	echo "| $parser->packet_num |  $parser->packet_dir  | $parser->packet_id | Packet Not Complete                                |\n";
+}
+
+function PP_LINE_BREAK($parser) {
+	echo $parser->br;
+}
+
+function PP_ENTRY_TEXT($parser) {
+	echo "T-----T-----T------T----------------------------------------------------T----------------------------------------------T\n";
+	echo "| Num | Way |  ID  | Packet description                                 | Extra information                            \n";
+	echo "I-----I-----I------I----------------------------------------------------I----------------------------------------------I\n";
+}
+
+
 // packet 0x64
 function PACKET_CA_LOGIN($parser) {
 	echo "$parser->packet_desc Version=".$parser->long()."\n";
@@ -50,6 +87,7 @@ function PACKET_AC_ACCEPT_LOGIN($parser) {
 	echo "$parser->nl lastLoginIP=".$parser->ip()."\n";
 	echo "$parser->nl lastLoginTime=".$parser->string(26)."\n";
 	echo "$parser->nl Sex=".$parser->byte()."\n";
+	//echo "$parser->nl unk=".$parser->long()."\n";
 	$ServerList = ($parser->packet_length - $parser->packet_pointer) / 32;
 	for ($i = 0; $i < $ServerList; $i++) {
 		echo "$parser->nl ip=".$parser->ip()."\n";

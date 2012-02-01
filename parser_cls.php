@@ -8,6 +8,8 @@ class parser {
 	public $packet, $packet_id, $packet_length, $packet_pointer, $packet_desc;
 	public $packet_num, $packet_dir, $prev_packet, $prev_packet_dir;
 	
+	public $mode	= array();		// mode settings
+	
 	// Static Data
 	public $unit    = array();      // array to store seen units for later use
 	public $job     = array();      // jobs , mobs , mercs,  npc ids
@@ -28,26 +30,71 @@ class parser {
 	public $br = "|.....|.....|......|....................................................|...............................\n";
 
 	function __construct() {
-		// Load Static Data
-		$this->load_data("enum/jobtype.txt",	"job");
-		$this->load_data("enum/item.txt",		"item");
-		$this->load_data("enum/var.txt",		"vars");
-		$this->load_data("enum/skill.txt",		"skill");
-		$this->load_data("enum/efst.txt",		"efst");
 		// Load Packet Info
-		$this->load_data("packet/plen.txt",		"p_lens");
-		$this->load_data("packet/func.txt",		"p_funcs");
-		//print_r($this->vars);
+		$this->load_plen();
+		$this->load_data("./data/packet/func.txt",		"p_funcs");
+		// Load Static Data
+		$this->load_data("./data/enum/jobtype.txt",	"job");
+		$this->load_data("./data/enum/item.txt",		"item");
+		$this->load_data("./data/enum/var.txt",		"vars");
+		$this->load_data("./data/enum/skill.txt",		"skill");
+		$this->load_data("./data/enum/efst.txt",		"efst");
+		
+		//$this->load_data("./data/packet/plen.txt",		"p_lens");
+		//print_r($this->p_lens);
+		
+		$this->load_mode();
 	}
 
 	function end_packet() {
-		if($this->packet_pointer < $this->packet_length){
+		if($this->packet_pointer < $this->packet_length) {
 			$extra_bytes = $this->packet_length - $this->packet_pointer;
 			// should be output from mode/*.php
 			echo "$this->nl $extra_bytes bytes not analyzed\n";
 		}
 	}
-
+	
+	function load_plen() {
+		echo "\nPacket Length Tables -\n";
+		$modes = glob("./data/packet/plen*.txt");
+		if (sizeof($modes) == 0) {
+			die("Place packet lengths inside the data/packet folder\n");
+		}
+		foreach ($modes as $i => $mode) {
+			echo $i . ": " . basename($mode,".txt") . "\r\n";
+		}
+		fwrite(STDOUT, "\nWhich plen to use? ");
+		$choice = trim(fgets(STDIN));
+		if (isset($modes[$choice])) {
+			$mode = $modes[$choice];
+			$this->load_data($mode,		"p_lens");
+		} else {
+			die("Bad choice\n");
+		}
+	}
+	
+	function load_mode() {
+		echo "\nPacket Analyze Modes -\n";
+		$modes = glob("./mode/*.php");
+		if (sizeof($modes) == 0) {
+			die("Place modes inside the mode folder\n");
+		}
+		foreach ($modes as $i => $mode) {
+			echo $i . ": " . basename($mode,".php") . "\r\n";
+		}
+		fwrite(STDOUT, "\nWhich mode to use? ");
+		$choice = trim(fgets(STDIN));
+		if (isset($modes[$choice])) {
+			$mode = $modes[$choice];
+			require_once($mode);
+			if(function_exists('PP_MODE_INIT')) {
+				PP_MODE_INIT($this); // initialize mode settings
+			}
+		} else {
+			die("Bad choice\n");
+		}
+	}
+	
 	function byte($pointer = null) {
 		if($pointer) {
 			$data = $this->unpack2("C", substr($this->packet, $pointer, 1));
@@ -147,10 +194,10 @@ class parser {
 	
 	function load_data($filename, $arr) {
 		$starttime = microtime(true);
-		$filename = "./data/$filename";
+		//$filename = "$filename";
 		$txtfile = fopen($filename, 'r') or exit("Unable to open $filename");
 		while (!feof($txtfile)) {
-			if (preg_match('/(.*),(.*)/', fgets($txtfile), $regs)) {
+			if(preg_match('/(.*),(.*)/', fgets($txtfile), $regs)) {
 				$this->{$arr}[$regs[1]] = trim($regs[2]);
 			}
 		}
@@ -163,16 +210,24 @@ class parser {
 		// custom unpack();
 		// returns value if only a single element in array
 		$temp = unpack($format, $string);
-		if(count($temp) == 1){
+		if(count($temp) == 1) {
 			return $temp[1];
 		} else {
 			return $temp;
 		}
 	}
 	
-	function parse_stream(){
+	function parse_stream() {
+		// Get packet Direction from begining of stream
+		if(substr($this->stream,0,2) == "RR") {
+			$this->packet_dir = "R";
+			$this->stream = substr($this->stream,2);
+		} elseif(substr($this->stream,0,2) == "SS") {
+			$this->packet_dir = "S";
+			$this->stream = substr($this->stream,2);
+		}
 		// Check for a partial packet from previous stream
-		if($this->prev_packet && $this->packet_dir == $this->prev_packet_dir){
+		if($this->prev_packet && $this->packet_dir == $this->prev_packet_dir) {
 			//echo "previous partial packet pre-concatenated\n";
 			$this->stream = $this->prev_packet . $this->stream;
 			$this->prev_packet = false;
@@ -180,48 +235,51 @@ class parser {
 		}
 		// increase packet number, and format for output
 		$this->packet_num = str_pad(++$this->packet_num, 3, "0", STR_PAD_LEFT);
+		
 		while(strlen($this->stream)) {
+			// take packet id from packet, and format for array lookup
 			$this->packet_id = str_pad(strtoupper(dechex($this->unpack2("S", $this->stream))),4,"0",STR_PAD_LEFT);
+			
+			// These should never happen ( test this )
 			// next packet is Server -> Client
 			if($this->packet_id == "5252") { // RR
 				$this->packet_dir = "R";
-				//echo "direction set to R\n";
 				$this->stream = substr($this->stream, 2);
 				continue;
 			}
 			// next packet is Client -> Server
 			if($this->packet_id == "5353") { // SS
 				$this->packet_dir = "S";
-				//echo "direction set to S\n";
 				$this->stream = substr($this->stream, 2);
 				continue;
 			}
+			
 			// catch this stupid Account ID aegis sends
-			if (!$this->aid_packet && $this->aid && $this->unpack2("L", $this->stream) == $this->aid) {
-				//if (function_exists('GID'))
-				//	GID($this);
-				// should be output from mode/*.php
-				echo "| $this->packet_num |  $this->packet_dir  |     | Account_ID\n";
-				$this->aid_packet = true;
+			if(!$this->aid_packet && $this->aid && $this->unpack2("L", $this->stream) == $this->aid) {
+				if(function_exists('PP_AEGIS_GID')) {
+					PP_AEGIS_GID($this);
+				}
+				$this->aid_packet = true; //aid packet has been caught, 
 				$this->stream = substr($this->stream, 4);
 				continue;
 			}
 			// Store Account_ID for checking
-			if(!$this->aid && $this->packet_id == "0069"){
+			if(!$this->aid && $this->packet_id == "0069") {
 				//echo "AccountID got from 0069\n";
 				$this->aid = $this->unpack2("@8/L", $this->stream);
 			}
 			// ####
-			if (array_key_exists($this->packet_id, $this->p_lens)) {
+			if(array_key_exists($this->packet_id, $this->p_lens)) {
 				$this->packet_length = $this->p_lens[$this->packet_id];
 				if(!$this->packet_length) {
 					// Get packet length from packet
 					$this->packet_length = $this->unpack2("@2/S", $this->stream);
 				}
-				if (strlen($this->stream) < $this->packet_length) {
+				if(strlen($this->stream) < $this->packet_length) {
 					// Packet is not complete
-					// should be output from mode/*.php
-					echo "| $this->packet_num |  $this->packet_dir  | $this->packet_id | Packet Not Complete                                |\n";
+					if(function_exists('PP_PACKET_SPLIT')) {
+						PP_PACKET_SPLIT($this); // output data of split packet
+					}
 					$this->prev_packet = $this->stream;
 					$this->prev_packet_dir = $this->packet_dir;
 					break;
@@ -230,26 +288,31 @@ class parser {
 				// copy and remove single packet from stream
 				$this->packet = substr($this->stream,0,$this->packet_length);
 				$this->stream = substr($this->stream,$this->packet_length);
+				if($this->mode["debug"]) {
+					fwrite($this->debug, bin2hex($this->packet) . "\n");
+				}
 				
 				if(!array_key_exists($this->packet_id, $this->p_funcs)) {
-					$this->p_funcs[$this->packet_id] = "NO_FUNC_DEFINED";
+					$this->p_funcs[$this->packet_id] = "PP_FUNC_NOT_DEFINED";
 				}
 				// packet_desc should be made in mode/full_info.php - but here is fine for now
 				$this->packet_desc = str_pad($this->p_funcs[$this->packet_id], 50, " ");
 				$this->packet_desc = "| $this->packet_num |  $this->packet_dir  | $this->packet_id | $this->packet_desc |";
-				$this->packet_pointer = 2; // packet_id
+				$this->packet_pointer = 2; // packet_id // pointer used for extra byte checking
 				if(function_exists($this->p_funcs[$this->packet_id])) {
 					$this->p_funcs[$this->packet_id]($this);
-					$this->end_packet();
-				} else {
-					echo $this->packet_desc . "\n";
+					if($this->mode["extra_bytes"]) {
+						$this->end_packet();
+					}
 				}
 			} else {
 				// cannot find packet length
 				die("Packet length not found for $this->packet_id\nMake sure data/packet/plen is correct for client\n\n");
 			}
 		}
-		echo $this->br;
+		if(function_exists("PP_LINE_BREAK")) {
+			PP_LINE_BREAK($this); // echo a line break
+		}
 	}
 }
 ?>
