@@ -33,7 +33,7 @@ function echo_save($parser, $text){
 function PACKET_HC_NOTIFY_ZONESVR($parser) {
 	$parser->data['map'] = $parser->string(16, 6);
 	$parser->data['talking_to_npc'] = false;
-	$parser->data['money'] = 0;
+	$parser->data['money'] = false;
 }
 
 function PACKET_ZC_SAY_DIALOG($parser){
@@ -154,7 +154,7 @@ function PACKET_ZC_LONGPAR_CHANGE($parser) {
 	if($varID != 20){ // money
 		return;
 	}
-	if($parser->data['money'] > 0){
+	if($parser->data['money'] !== false){
 		if($parser->data['talking_to_npc'] == true){
 			$diff = $amount - $parser->data['money'];
 			if($diff < 0){
@@ -166,5 +166,6 @@ function PACKET_ZC_LONGPAR_CHANGE($parser) {
 		}
 	}
 	$parser->data['money'] = $amount;
+	//echo "\n#you have $amount Z\n";
 }
 ?>
