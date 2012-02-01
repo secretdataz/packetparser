@@ -179,7 +179,7 @@ function PACKET_HC_REFUSE_MAKECHAR($parser) {
 
 // packet 0x6f
 function PACKET_HC_ACCEPT_DELETECHAR($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x70
@@ -386,7 +386,7 @@ function PACKET_ZC_NOTIFY_STANDENTRY_NPC($parser) {
 
 // packet 0x7d
 function PACKET_CZ_NOTIFY_ACTORINIT($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x7e
@@ -412,17 +412,17 @@ function PACKET_SC_NOTIFY_BAN($parser) {
 
 // packet 0x82
 function PACKET_CZ_REQUEST_QUIT($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x83
 function PACKET_ZC_ACCEPT_QUIT($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x84
 function PACKET_ZC_REFUSE_QUIT($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x85
@@ -530,7 +530,7 @@ function PACKET_ZC_NPCACK_SERVERMOVE($parser) {
 
 // packet 0x93
 function PACKET_ZC_NPCACK_ENABLE($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x94
@@ -736,6 +736,7 @@ function PACKET_CZ_REQ_WEAR_EQUIP($parser) {
 function PACKET_ZC_REQ_WEAR_EQUIP_ACK($parser) {
 	echo "$parser->packet_desc index=".$parser->word()."\n";
 	echo "$parser->nl wearLocation=".$parser->word()."\n";
+	echo "$parser->nl wItemSpriteNumber=".$parser->word()."\n";
 	echo "$parser->nl result=".$parser->byte()."\n";
 }
 
@@ -816,7 +817,7 @@ function PACKET_CZ_REQ_NEXT_SCRIPT($parser) {
 
 // packet 0xba
 function PACKET_CZ_REQ_STATUS($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xbb
@@ -882,7 +883,7 @@ function PACKET_ZC_EMOTION($parser) {
 
 // packet 0xc1
 function PACKET_CZ_REQ_USER_COUNT($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xc2
@@ -973,7 +974,7 @@ function PACKET_ZC_ACK_DISCONNECT_CHARACTER($parser) {
 
 // packet 0xce
 function PACKET_CZ_DISCONNECT_ALL_CHARACTER($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xcf
@@ -1001,7 +1002,7 @@ function PACKET_ZC_SETTING_WHISPER_STATE($parser) {
 
 // packet 0xd3
 function PACKET_CZ_REQ_WHISPER_LIST($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xd4
@@ -1117,7 +1118,7 @@ function PACKET_CZ_REQ_EXPEL_MEMBER($parser) {
 
 // packet 0xe3
 function PACKET_CZ_EXIT_ROOM($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xe4
@@ -1167,7 +1168,7 @@ function PACKET_ZC_ACK_ADD_EXCHANGE_ITEM($parser) {
 
 // packet 0xeb
 function PACKET_CZ_CONCLUDE_EXCHANGE_ITEM($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xec
@@ -1177,17 +1178,17 @@ function PACKET_ZC_CONCLUDE_EXCHANGE_ITEM($parser) {
 
 // packet 0xed
 function PACKET_CZ_CANCEL_EXCHANGE_ITEM($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xee
 function PACKET_ZC_CANCEL_EXCHANGE_ITEM($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xef
 function PACKET_CZ_EXEC_EXCHANGE_ITEM($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xf0
@@ -1197,7 +1198,7 @@ function PACKET_ZC_EXEC_EXCHANGE_ITEM($parser) {
 
 // packet 0xf1
 function PACKET_ZC_EXCHANGEITEM_UNDO($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xf2
@@ -1240,12 +1241,12 @@ function PACKET_ZC_DELETE_ITEM_FROM_STORE($parser) {
 
 // packet 0xf7
 function PACKET_CZ_CLOSE_STORE($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xf8
 function PACKET_ZC_CLOSE_STORE($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0xf9
@@ -1297,7 +1298,7 @@ function PACKET_CZ_JOIN_GROUP($parser) {
 
 // packet 0x100
 function PACKET_CZ_REQ_LEAVE_GROUP($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x101
@@ -1379,7 +1380,7 @@ function PACKET_ZC_MVP($parser) {
 
 // packet 0x10d
 function PACKET_ZC_THROW_MVPITEM($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x10e
@@ -1488,7 +1489,7 @@ function PACKET_ZC_NOTIFY_GROUNDSKILL($parser) {
 
 // packet 0x118
 function PACKET_CZ_CANCEL_LOCKON($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x119
@@ -1523,7 +1524,7 @@ function PACKET_ZC_WARPLIST($parser) {
 
 // packet 0x11d
 function PACKET_CZ_REMEMBER_WARPPOINT($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x11e
@@ -1634,12 +1635,12 @@ function PACKET_CZ_MOVE_ITEM_FROM_CART_TO_STORE($parser) {
 
 // packet 0x12a
 function PACKET_CZ_REQ_CARTOFF($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x12b
 function PACKET_ZC_CARTOFF($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x12c
@@ -1654,7 +1655,7 @@ function PACKET_ZC_OPENSTORE($parser) {
 
 // packet 0x12e
 function PACKET_CZ_REQ_CLOSESTORE($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x12f
@@ -1898,7 +1899,7 @@ function PACKET_ZC_MYGUILD_BASIC_INFO($parser) {
 
 // packet 0x14d
 function PACKET_CZ_REQ_GUILD_MENUINTERFACE($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x14e
@@ -1997,7 +1998,7 @@ function PACKET_CZ_REQ_OPEN_MEMBER_INFO($parser) {
 
 // packet 0x158
 function PACKET_ZC_ACK_OPEN_MEMBER_INFO($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x159
@@ -2502,7 +2503,7 @@ function PACKET_CZ_CHANGE_EFFECTSTATE($parser) {
 
 // packet 0x19e
 function PACKET_ZC_START_CAPTURE($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x19f
@@ -2713,7 +2714,7 @@ function PACKET_CZ_RECALL_GID($parser) {
 
 // packet 0x1be
 function PACKET_AC_ASK_PNGAMEROOM($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x1bf
@@ -2723,7 +2724,7 @@ function PACKET_CA_REPLY_PNGAMEROOM($parser) {
 
 // packet 0x1c0
 function PACKET_CZ_REQ_REMAINTIME($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x1c1
@@ -2788,7 +2789,7 @@ function PACKET_CS_REQ_ENCRYPTION($parser) {
 
 // packet 0x1c7
 function PACKET_SC_ACK_ENCRYPTION($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x1c8
@@ -2989,7 +2990,7 @@ function PACKET_ZC_NOTIFY_MOVEENTRY2($parser) {
 
 // packet 0x1db
 function PACKET_CA_REQ_HASH($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x1dc
@@ -3053,7 +3054,7 @@ function PACKET_CZ_JOIN_COUPLE($parser) {
 
 // packet 0x1e4
 function PACKET_ZC_START_COUPLE($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x1e5
@@ -3068,7 +3069,7 @@ function PACKET_ZC_COUPLENAME($parser) {
 
 // packet 0x1e7
 function PACKET_CZ_DORIDORI($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x1e8
@@ -3113,7 +3114,7 @@ function PACKET_ZC_GUILD_MEMBER_MAP_CHANGE($parser) {
 
 // packet 0x1ed
 function PACKET_CZ_CHOPOKGI($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x1ee
@@ -3222,7 +3223,7 @@ function PACKET_CZ_JOIN_BABY($parser) {
 
 // packet 0x1f8
 function PACKET_ZC_START_BABY($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x1f9
@@ -3459,12 +3460,12 @@ function PACKET_ZC_BABYMSG($parser) {
 
 // packet 0x217
 function PACKET_CZ_BLACKSMITH_RANK($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x218
 function PACKET_CZ_ALCHEMIST_RANK($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x219
@@ -3551,7 +3552,7 @@ function PACKET_ZC_TAEKWON_POINT($parser) {
 
 // packet 0x225
 function PACKET_CZ_TAEKWON_RANK($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x226
@@ -3760,7 +3761,7 @@ function PACKET_HC_REQUEST_CHARACTER_PASSWORD($parser) {
 
 // packet 0x23f
 function PACKET_CZ_MAIL_GET_LIST($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x240
@@ -3949,7 +3950,7 @@ function PACKET_ZC_ACK_MAIL_DELETE($parser) {
 
 // packet 0x258
 function PACKET_CA_REQ_GAME_GUARD_CHECK($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x259
@@ -4068,12 +4069,12 @@ function PACKET_AC_ACK_AUTHEKEY_FAIL_NOTMATCHCARDPASS($parser) {
 
 // packet 0x26f
 function PACKET_AC_ACK_FIRST_LOGIN($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x270
 function PACKET_AC_REQ_LOGIN_ACCOUNT_INFO($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x271
@@ -4136,12 +4137,12 @@ function PACKET_CA_LOGIN_PCBANG($parser) {
 
 // packet 0x278
 function PACKET_ZC_NOTIFY_PCBANG($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x279
 function PACKET_CZ_HUNTINGLIST($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x27a
@@ -4318,7 +4319,7 @@ function PACKET_ZC_MSG($parser) {
 
 // packet 0x292
 function PACKET_CZ_STANDING_RESURRECTION($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x293
@@ -4881,7 +4882,7 @@ function PACKET_ZC_ITEM_PICKUP_ACK3($parser) {
 
 // packet 0x2d5
 function PACKET_ZC_ISVR_DISCONNECT($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x2d6
@@ -5177,17 +5178,47 @@ function PACKET_ZC_PROGRESS($parser) {
 
 // packet 0x2f1
 function PACKET_CZ_PROGRESS($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x2f2
 function PACKET_ZC_PROGRESS_CANCEL($parser) {
+	echo "$parser->packet_desc \n";
+}
+
+// packet 0x2f3
+function PACKET_CZ_IRMAIL_SEND($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	echo "$parser->nl ReceiveName=".$parser->string(24)."\n";
+	echo "$parser->nl Title=".$parser->string(40)."\n";
+	echo "$parser->nl Zeny=".$parser->long()."\n";
+		echo "$parser->nl index=".$parser->word()."\n";
+		echo "$parser->nl id=".$parser->word()."\n";
+		echo "$parser->nl cnt=".$parser->word()."\n";
+}
+
+// packet 0x2f4
+function PACKET_ZC_IRMAIL_SEND_RES($parser) {
+	echo "$parser->packet_desc Result=".$parser->byte()."\n";
+}
+
+// packet 0x2f5
+function PACKET_ZC_IRMAIL_NOTIFY($parser) {
 	echo "$parser->packet_desc ";
+		echo "$parser->nl office=".$parser->byte()."\n";
+		echo "$parser->nl id=".$parser->long()."\n";
+}
+
+// packet 0x2f6
+function PACKET_CZ_IRMAIL_LIST($parser) {
+	echo "$parser->packet_desc ";
+		echo "$parser->nl office=".$parser->byte()."\n";
+		echo "$parser->nl id=".$parser->long()."\n";
 }
 
 // packet 0x35c
 function PACKET_CZ_OPEN_SIMPLE_CASHSHOP_ITEMLIST($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x35d
@@ -5209,12 +5240,73 @@ function PACKET_ZC_SIMPLE_CASHSHOP_POINT_ITEMLIST($parser) {
 
 // packet 0x35e
 function PACKET_CZ_CLOSE_WINDOW($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
-// packet 0x3dd
-function PACKET_AHC_GAME_GUARD($parser) {
-	echo "$parser->packet_desc AuthData=".$parser->long()."\n";
+// packet 0x35f
+function PACKET_CZ_REQUEST_MOVE2($parser) {
+	echo "$parser->packet_desc dest=".$parser->string(3)."\n";
+}
+
+// packet 0x360
+function PACKET_CZ_REQUEST_TIME2($parser) {
+	echo "$parser->packet_desc clientTime=".$parser->long()."\n";
+}
+
+// packet 0x361
+function PACKET_CZ_CHANGE_DIRECTION2($parser) {
+	echo "$parser->packet_desc headDir=".$parser->word()."\n";
+	echo "$parser->nl dir=".$parser->byte()."\n";
+}
+
+// packet 0x362
+function PACKET_CZ_ITEM_PICKUP2($parser) {
+	echo "$parser->packet_desc ITAID=".$parser->long()."\n";
+}
+
+// packet 0x363
+function PACKET_CZ_ITEM_THROW2($parser) {
+	echo "$parser->packet_desc Index=".$parser->word()."\n";
+	echo "$parser->nl count=".$parser->word()."\n";
+}
+
+// packet 0x364
+function PACKET_CZ_MOVE_ITEM_FROM_BODY_TO_STORE2($parser) {
+	echo "$parser->packet_desc index=".$parser->word()."\n";
+	echo "$parser->nl count=".$parser->long()."\n";
+}
+
+// packet 0x365
+function PACKET_CZ_MOVE_ITEM_FROM_STORE_TO_BODY2($parser) {
+	echo "$parser->packet_desc index=".$parser->word()."\n";
+	echo "$parser->nl count=".$parser->long()."\n";
+}
+
+// packet 0x366
+function PACKET_CZ_USE_SKILL_TOGROUND2($parser) {
+	echo "$parser->packet_desc selectedLevel=".$parser->word()."\n";
+	echo "$parser->nl SKID=".$parser->word()."\n";
+	echo "$parser->nl xPos=".$parser->word()."\n";
+	echo "$parser->nl yPos=".$parser->word()."\n";
+}
+
+// packet 0x367
+function PACKET_CZ_USE_SKILL_TOGROUND_WITHTALKBOX2($parser) {
+	echo "$parser->packet_desc selectedLevel=".$parser->word()."\n";
+	echo "$parser->nl SKID=".$parser->word()."\n";
+	echo "$parser->nl xPos=".$parser->word()."\n";
+	echo "$parser->nl yPos=".$parser->word()."\n";
+	echo "$parser->nl contents=".$parser->string(80)."\n";
+}
+
+// packet 0x368
+function PACKET_CZ_REQNAME2($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+}
+
+// packet 0x369
+function PACKET_CZ_REQNAME_BYGID2($parser) {
+	echo "$parser->packet_desc GID=".$parser->long()."\n";
 }
 
 // packet 0x3de
@@ -5330,7 +5422,7 @@ function PACKET_ZC_QUEST_NOTIFY_EFFECT($parser) {
 
 // packet 0x447
 function PACKET_CZ_BLOCKING_PLAY_CANCEL($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x448
@@ -5355,7 +5447,7 @@ function PACKET_CZ_CLIENT_VERSION($parser) {
 
 // packet 0x44b
 function PACKET_CZ_CLOSE_SIMPLECASH_SHOP($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x7d0
@@ -5366,7 +5458,7 @@ function PACKET_ZC_ES_RESULT($parser) {
 
 // packet 0x7d1
 function PACKET_CZ_ES_GET_LIST($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x7d2
@@ -5530,7 +5622,7 @@ function PACKET_HC_CHECKBOT_RESULT($parser) {
 
 // packet 0x7ea
 function PACKET_CZ_BATTLE_FIELD_LIST($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x7eb
@@ -5823,7 +5915,7 @@ function PACKET_ZC_PARTY_BOOKING_ACK_SEARCH($parser) {
 
 // packet 0x806
 function PACKET_CZ_PARTY_BOOKING_REQ_DELETE($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x807
@@ -5870,7 +5962,7 @@ function PACKET_ZC_PARTY_BOOKING_NOTIFY_DELETE($parser) {
 
 // packet 0x80c
 function PACKET_CZ_SIMPLE_CASH_BTNSHOW($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x80d
@@ -5946,7 +6038,7 @@ function PACKET_ZC_BUYING_STORE_ENTRY($parser) {
 
 // packet 0x815
 function PACKET_CZ_REQ_CLOSE_BUYING_STORE($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x816
@@ -6039,7 +6131,7 @@ function PACKET_ZC_COSTUME_SPRITE_CHANGE($parser) {
 
 // packet 0x821
 function PACKET_AC_OTP_USER($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x822
@@ -6059,8 +6151,8 @@ function PACKET_ZC_FAILED_TRADE_BUYING_STORE_TO_SELLER($parser) {
 	echo "$parser->nl ITID=".$parser->word()."\n";
 }
 
-// packet 0x825
-function PACKET_CA_SSO_LOGIN_REQ($parser) {
+// packet 0x825a
+function PACKET_CA_SSO_LOGIN_REQa($parser) {
 	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
 	echo "$parser->nl Version=".$parser->long()."\n";
 	echo "$parser->nl clienttype=".$parser->byte()."\n";
@@ -6070,8 +6162,8 @@ function PACKET_CA_SSO_LOGIN_REQ($parser) {
 	echo "$parser->nl t1=".$parser->string($parser->packet_length - $parser->packet_pointer)."\n";
 }
 
-// packet 0x825a
-function PACKET_CA_SSO_LOGIN_REQa($parser) {
+// packet 0x825
+function PACKET_CA_SSO_LOGIN_REQ($parser) {
 	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
 	echo "$parser->nl Version=".$parser->long()."\n";
 	echo "$parser->nl clienttype=".$parser->byte()."\n";
@@ -6122,6 +6214,58 @@ function PACKET_HC_DELETE_CHAR3_CANCEL($parser) {
 	echo "$parser->nl Result=".$parser->long()."\n";
 }
 
+// packet 0x82d
+function PACKET_HC_ACCEPT2($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	echo "$parser->nl NormalSlotNum=".$parser->byte()."\n";
+	echo "$parser->nl PremiumSlotNum=".$parser->byte()."\n";
+	echo "$parser->nl BillingSlotNum=".$parser->byte()."\n";
+	echo "$parser->nl ProducibleSlotNum=".$parser->byte()."\n";
+	echo "$parser->nl ValidSlotNum=".$parser->byte()."\n";
+	echo "$parser->nl m_extension=".$parser->string(20)."\n";
+	$charInfo = ($parser->packet_length - $parser->packet_pointer) / 116;
+	for ($i = 0; $i < $charInfo; $i++) {
+		echo "$parser->nl GID=".$parser->long()."\n";
+		echo "$parser->nl exp=".$parser->long()."\n";
+		echo "$parser->nl money=".$parser->long()."\n";
+		echo "$parser->nl jobexp=".$parser->long()."\n";
+		echo "$parser->nl joblevel=".$parser->long()."\n";
+		echo "$parser->nl bodystate=".$parser->long()."\n";
+		echo "$parser->nl healthstate=".$parser->long()."\n";
+		echo "$parser->nl effectstate=".$parser->long()."\n";
+		echo "$parser->nl virtue=".$parser->long()."\n";
+		echo "$parser->nl honor=".$parser->long()."\n";
+		echo "$parser->nl jobpoint=".$parser->word()."\n";
+		echo "$parser->nl hp=".$parser->long()."\n";
+		echo "$parser->nl maxhp=".$parser->long()."\n";
+		echo "$parser->nl sp=".$parser->word()."\n";
+		echo "$parser->nl maxsp=".$parser->word()."\n";
+		echo "$parser->nl speed=".$parser->word()."\n";
+		echo "$parser->nl job=".$parser->word()."\n";
+		echo "$parser->nl head=".$parser->word()."\n";
+		echo "$parser->nl weapon=".$parser->word()."\n";
+		echo "$parser->nl level=".$parser->word()."\n";
+		echo "$parser->nl sppoint=".$parser->word()."\n";
+		echo "$parser->nl accessory=".$parser->word()."\n";
+		echo "$parser->nl shield=".$parser->word()."\n";
+		echo "$parser->nl accessory2=".$parser->word()."\n";
+		echo "$parser->nl accessory3=".$parser->word()."\n";
+		echo "$parser->nl headpalette=".$parser->word()."\n";
+		echo "$parser->nl bodypalette=".$parser->word()."\n";
+		echo "$parser->nl name=".$parser->string(24)."\n";
+		echo "$parser->nl Str=".$parser->byte()."\n";
+		echo "$parser->nl Agi=".$parser->byte()."\n";
+		echo "$parser->nl Vit=".$parser->byte()."\n";
+		echo "$parser->nl Int=".$parser->byte()."\n";
+		echo "$parser->nl Dex=".$parser->byte()."\n";
+		echo "$parser->nl Luk=".$parser->byte()."\n";
+		echo "$parser->nl CharNum=".$parser->byte()."\n";
+		echo "$parser->nl haircolor=".$parser->byte()."\n";
+		echo "$parser->nl bIsChangedCharName=".$parser->word()."\n";
+		echo "$parser->nl Robe=".$parser->long()."\n";
+	}
+}
+
 // packet 0x835
 function PACKET_CZ_SEARCH_STORE_INFO($parser) {
 	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
@@ -6162,7 +6306,7 @@ function PACKET_ZC_SEARCH_STORE_INFO_FAILED($parser) {
 
 // packet 0x838
 function PACKET_CZ_SEARCH_STORE_INFO_NEXT_PAGE($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x839
@@ -6179,7 +6323,7 @@ function PACKET_ZC_OPEN_SEARCH_STORE_INFO($parser) {
 
 // packet 0x83b
 function PACKET_CZ_CLOSE_SEARCH_STORE_INFO($parser) {
-	echo "$parser->packet_desc ";
+	echo "$parser->packet_desc \n";
 }
 
 // packet 0x83c
@@ -6205,6 +6349,187 @@ function PACKET_AC_REFUSE_LOGIN_R2($parser) {
 function PACKET_CH_SELECT_ACCESSIBLE_MAPNAME($parser) {
 	echo "$parser->packet_desc CharNum=".$parser->byte()."\n";
 	echo "$parser->nl mapListNum=".$parser->byte()."\n";
+}
+
+// packet 0x856
+function PACKET_ZC_NOTIFY_MOVEENTRY8($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	echo "$parser->nl objecttype=".$parser->byte()."\n";
+	echo "$parser->nl GID=".$parser->long()."\n";
+	echo "$parser->nl speed=".$parser->word()."\n";
+	echo "$parser->nl bodyState=".$parser->word()."\n";
+	echo "$parser->nl healthState=".$parser->word()."\n";
+	echo "$parser->nl effectState=".$parser->long()."\n";
+	echo "$parser->nl job=".$parser->word()."\n";
+	echo "$parser->nl head=".$parser->word()."\n";
+	echo "$parser->nl weapon=".$parser->long()."\n";
+	echo "$parser->nl accessory=".$parser->word()."\n";
+	echo "$parser->nl moveStartTime=".$parser->long()."\n";
+	echo "$parser->nl accessory2=".$parser->word()."\n";
+	echo "$parser->nl accessory3=".$parser->word()."\n";
+	echo "$parser->nl headpalette=".$parser->word()."\n";
+	echo "$parser->nl bodypalette=".$parser->word()."\n";
+	echo "$parser->nl headDir=".$parser->word()."\n";
+	echo "$parser->nl robe=".$parser->word()."\n";
+	echo "$parser->nl GUID=".$parser->long()."\n";
+	echo "$parser->nl GEmblemVer=".$parser->word()."\n";
+	echo "$parser->nl honor=".$parser->word()."\n";
+	echo "$parser->nl virtue=".$parser->long()."\n";
+	echo "$parser->nl isPKModeON=".$parser->byte()."\n";
+	echo "$parser->nl sex=".$parser->byte()."\n";
+	echo "$parser->nl MoveData=".$parser->string(6)."\n";
+	echo "$parser->nl xSize=".$parser->byte()."\n";
+	echo "$parser->nl ySize=".$parser->byte()."\n";
+	echo "$parser->nl clevel=".$parser->word()."\n";
+	echo "$parser->nl font=".$parser->word()."\n";
+}
+
+// packet 0x857
+function PACKET_ZC_NOTIFY_STANDENTRY7($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	echo "$parser->nl objecttype=".$parser->byte()."\n";
+	echo "$parser->nl GID=".$parser->long()."\n";
+	echo "$parser->nl speed=".$parser->word()."\n";
+	echo "$parser->nl bodyState=".$parser->word()."\n";
+	echo "$parser->nl healthState=".$parser->word()."\n";
+	echo "$parser->nl effectState=".$parser->long()."\n";
+	echo "$parser->nl job=".$parser->word()."\n";
+	echo "$parser->nl head=".$parser->word()."\n";
+	echo "$parser->nl weapon=".$parser->long()."\n";
+	echo "$parser->nl accessory=".$parser->word()."\n";
+	echo "$parser->nl accessory2=".$parser->word()."\n";
+	echo "$parser->nl accessory3=".$parser->word()."\n";
+	echo "$parser->nl headpalette=".$parser->word()."\n";
+	echo "$parser->nl bodypalette=".$parser->word()."\n";
+	echo "$parser->nl headDir=".$parser->word()."\n";
+	echo "$parser->nl robe=".$parser->word()."\n";
+	echo "$parser->nl GUID=".$parser->long()."\n";
+	echo "$parser->nl GEmblemVer=".$parser->word()."\n";
+	echo "$parser->nl honor=".$parser->word()."\n";
+	echo "$parser->nl virtue=".$parser->long()."\n";
+	echo "$parser->nl isPKModeON=".$parser->byte()."\n";
+	echo "$parser->nl sex=".$parser->byte()."\n";
+	echo "$parser->nl PosDir=".$parser->string(3)."\n";
+	echo "$parser->nl xSize=".$parser->byte()."\n";
+	echo "$parser->nl ySize=".$parser->byte()."\n";
+	echo "$parser->nl state=".$parser->byte()."\n";
+	echo "$parser->nl clevel=".$parser->word()."\n";
+	echo "$parser->nl font=".$parser->word()."\n";
+}
+
+// packet 0x858
+function PACKET_ZC_NOTIFY_NEWENTRY6($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	echo "$parser->nl objecttype=".$parser->byte()."\n";
+	echo "$parser->nl GID=".$parser->long()."\n";
+	echo "$parser->nl speed=".$parser->word()."\n";
+	echo "$parser->nl bodyState=".$parser->word()."\n";
+	echo "$parser->nl healthState=".$parser->word()."\n";
+	echo "$parser->nl effectState=".$parser->long()."\n";
+	echo "$parser->nl job=".$parser->word()."\n";
+	echo "$parser->nl head=".$parser->word()."\n";
+	echo "$parser->nl weapon=".$parser->long()."\n";
+	echo "$parser->nl accessory=".$parser->word()."\n";
+	echo "$parser->nl accessory2=".$parser->word()."\n";
+	echo "$parser->nl accessory3=".$parser->word()."\n";
+	echo "$parser->nl headpalette=".$parser->word()."\n";
+	echo "$parser->nl bodypalette=".$parser->word()."\n";
+	echo "$parser->nl headDir=".$parser->word()."\n";
+	echo "$parser->nl robe=".$parser->word()."\n";
+	echo "$parser->nl GUID=".$parser->long()."\n";
+	echo "$parser->nl GEmblemVer=".$parser->word()."\n";
+	echo "$parser->nl honor=".$parser->word()."\n";
+	echo "$parser->nl virtue=".$parser->long()."\n";
+	echo "$parser->nl isPKModeON=".$parser->byte()."\n";
+	echo "$parser->nl sex=".$parser->byte()."\n";
+	echo "$parser->nl PosDir=".$parser->string(3)."\n";
+	echo "$parser->nl xSize=".$parser->byte()."\n";
+	echo "$parser->nl ySize=".$parser->byte()."\n";
+	echo "$parser->nl clevel=".$parser->word()."\n";
+	echo "$parser->nl font=".$parser->word()."\n";
+}
+
+// packet 0x859
+function PACKET_ZC_EQUIPWIN_MICROSCOPE2($parser) {
+	echo "$parser->packet_desc Length=".$parser->word()."\n";
+	echo "$parser->nl characterName=".$parser->string(24)."\n";
+	echo "$parser->nl job=".$parser->word()."\n";
+	echo "$parser->nl head=".$parser->word()."\n";
+	echo "$parser->nl accessory=".$parser->word()."\n";
+	echo "$parser->nl accessory2=".$parser->word()."\n";
+	echo "$parser->nl accessory3=".$parser->word()."\n";
+	echo "$parser->nl robe=".$parser->word()."\n";
+	echo "$parser->nl headpalette=".$parser->word()."\n";
+	echo "$parser->nl bodypalette=".$parser->word()."\n";
+	echo "$parser->nl sex=".$parser->byte()."\n";
+}
+
+// packet 0x8af
+function PACKET_HC_WAITING_LOGIN($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl CurWaitingNum=".$parser->long()."\n";
+}
+
+// packet 0x8b0
+function PACKET_CH_WAITING_LOGIN($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl AuthCode=".$parser->long()."\n";
+	echo "$parser->nl userLevel=".$parser->long()."\n";
+	echo "$parser->nl clientType=".$parser->word()."\n";
+	echo "$parser->nl Sex=".$parser->byte()."\n";
+}
+
+// packet 0x8b7
+function PACKET_HC_SECOND_PASSWD_REQ($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl Seed=".$parser->long()."\n";
+}
+
+// packet 0x8b8
+function PACKET_CH_SECOND_PASSWD_ACK($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl SecondPWIdx=".$parser->string(6)."\n";
+}
+
+// packet 0x8b9
+function PACKET_HC_SECOND_PASSWD_LOGIN($parser) {
+	echo "$parser->packet_desc Result=".$parser->word()."\n";
+}
+
+// packet 0x8ba
+function PACKET_CH_MAKE_SECOND_PASSWD($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl Seed=".$parser->long()."\n";
+	echo "$parser->nl SecondPWIdx=".$parser->string(6)."\n";
+}
+
+// packet 0x8bb
+function PACKET_HC_MAKE_SECOND_PASSWD($parser) {
+	echo "$parser->packet_desc Result=".$parser->word()."\n";
+}
+
+// packet 0x8bc
+function PACKET_CH_DELETE_SECOND_PASSWD($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl Seed=".$parser->long()."\n";
+	echo "$parser->nl SecondPWIdx=".$parser->string(6)."\n";
+}
+
+// packet 0x8bd
+function PACKET_HC_DELETE_SECOND_PASSWD($parser) {
+	echo "$parser->packet_desc Result=".$parser->word()."\n";
+}
+
+// packet 0x8be
+function PACKET_CH_EDIT_SECOND_PASSWD($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl Seed=".$parser->long()."\n";
+	echo "$parser->nl SecondPWIdx=".$parser->string(6)."\n";
+}
+
+// packet 0x8bf
+function PACKET_HC_EDIT_SECOND_PASSWD($parser) {
+	echo "$parser->packet_desc Result=".$parser->word()."\n";
 }
 
 ?>

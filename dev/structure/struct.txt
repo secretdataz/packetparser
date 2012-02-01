@@ -804,7 +804,8 @@ struct PACKET_ZC_REQ_WEAR_EQUIP_ACK {
   /* this+0x0 */ short PacketType
   /* this+0x2 */ unsigned short index
   /* this+0x4 */ unsigned short wearLocation
-  /* this+0x6 */ unsigned char result
+  /* this+0x6 */ unsigned short wItemSpriteNumber
+  /* this+0x8 */ unsigned char result
 }
 
 // packet 0xab
@@ -5792,6 +5793,45 @@ struct PACKET_ZC_PROGRESS_CANCEL {
   /* this+0x0 */ short PacketType
 }
 
+// packet 0x2f3
+struct PACKET_CZ_IRMAIL_SEND {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short PacketLength
+  /* this+0x4 */ char ReceiveName[24]
+  /* this+0x1c */ char Title[40]
+  /* this+0x44 */ int Zeny
+  /* this+0x48 */ struct PACKET_CZ_IRMAIL_SEND tagItem {
+    /* this+0x0 */ short index
+    /* this+0x2 */ short id
+    /* this+0x4 */ short cnt
+  }
+}
+
+
+// packet 0x2f4
+struct PACKET_ZC_IRMAIL_SEND_RES {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ char Result
+}
+
+// packet 0x2f5
+struct PACKET_ZC_IRMAIL_NOTIFY {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ struct IRMAILID MailID {
+    /* this+0x0 */ unsigned char office
+    /* this+0x1 */ unsigned int id
+  }
+}
+
+// packet 0x2f6
+struct PACKET_CZ_IRMAIL_LIST {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ struct IRMAILID MailID {
+    /* this+0x0 */ unsigned char office
+    /* this+0x1 */ unsigned int id
+  }
+}
+
 // packet 0x35c
 struct PACKET_CZ_OPEN_SIMPLE_CASHSHOP_ITEMLIST {
   /* this+0x0 */ short PacketType
@@ -5819,11 +5859,83 @@ struct PACKET_CZ_CLOSE_WINDOW {
   /* this+0x0 */ short PacketType
 }
 
-// packet 0x3dd
-struct PACKET_AHC_GAME_GUARD {
+// packet 0x35f
+struct PACKET_CZ_REQUEST_MOVE2 {
   /* this+0x0 */ short PacketType
-  /* this+0x2 */ unsigned long AuthData[4]
+  /* this+0x2 */ unsigned char dest[3]
 }
+
+// packet 0x360
+struct PACKET_CZ_REQUEST_TIME2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long clientTime
+}
+
+// packet 0x361
+struct PACKET_CZ_CHANGE_DIRECTION2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short headDir
+  /* this+0x4 */ unsigned char dir
+}
+
+// packet 0x362
+struct PACKET_CZ_ITEM_PICKUP2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long ITAID
+}
+
+// packet 0x363
+struct PACKET_CZ_ITEM_THROW2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short Index
+  /* this+0x4 */ short count
+}
+
+// packet 0x364
+struct PACKET_CZ_MOVE_ITEM_FROM_BODY_TO_STORE2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short index
+  /* this+0x4 */ int count
+}
+
+// packet 0x365
+struct PACKET_CZ_MOVE_ITEM_FROM_STORE_TO_BODY2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short index
+  /* this+0x4 */ int count
+}
+
+// packet 0x366
+struct PACKET_CZ_USE_SKILL_TOGROUND2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short selectedLevel
+  /* this+0x4 */ unsigned short SKID
+  /* this+0x6 */ short xPos
+  /* this+0x8 */ short yPos
+}
+
+// packet 0x367
+struct PACKET_CZ_USE_SKILL_TOGROUND_WITHTALKBOX2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short selectedLevel
+  /* this+0x4 */ unsigned short SKID
+  /* this+0x6 */ short xPos
+  /* this+0x8 */ short yPos
+  /* this+0xa */ char contents[80]
+}
+
+// packet 0x368
+struct PACKET_CZ_REQNAME2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+}
+
+// packet 0x369
+struct PACKET_CZ_REQNAME_BYGID2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long GID
+}
+
 
 // packet 0x3de
 struct PACKET_CAH_ACK_GAME_GUARD {
@@ -6832,6 +6944,58 @@ struct PACKET_HC_DELETE_CHAR3_CANCEL {
   /* this+0x6 */ int Result
 }
 
+// packet 0x82d
+struct PACKET_HC_ACCEPT2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short PacketLength
+  /* this+0x4 */ unsigned char NormalSlotNum
+  /* this+0x5 */ unsigned char PremiumSlotNum
+  /* this+0x6 */ unsigned char BillingSlotNum
+  /* this+0x7 */ unsigned char ProducibleSlotNum
+  /* this+0x8 */ unsigned char ValidSlotNum
+  /* this+0x9 */ char m_extension[20]
+  /* this+0x1d */ struct CHARACTER_INFO_NEO_UNION charInfo[...] { // Size 116
+    /* this+0x0 */ unsigned long GID
+    /* this+0x4 */ int exp
+    /* this+0x8 */ int money
+    /* this+0xc */ int jobexp
+    /* this+0x10 */ int joblevel
+    /* this+0x14 */ int bodystate
+    /* this+0x18 */ int healthstate
+    /* this+0x1c */ int effectstate
+    /* this+0x20 */ int virtue
+    /* this+0x24 */ int honor
+    /* this+0x28 */ short jobpoint
+    /* this+0x2a */ int hp
+    /* this+0x2e */ int maxhp
+    /* this+0x32 */ short sp
+    /* this+0x34 */ short maxsp
+    /* this+0x36 */ short speed
+    /* this+0x38 */ short job
+    /* this+0x3a */ short head
+    /* this+0x3c */ short weapon
+    /* this+0x3e */ short level
+    /* this+0x40 */ short sppoint
+    /* this+0x42 */ short accessory
+    /* this+0x44 */ short shield
+    /* this+0x46 */ short accessory2
+    /* this+0x48 */ short accessory3
+    /* this+0x4a */ short headpalette
+    /* this+0x4c */ short bodypalette
+    /* this+0x4e */ unsigned char name[24]
+    /* this+0x66 */ unsigned char Str
+    /* this+0x67 */ unsigned char Agi
+    /* this+0x68 */ unsigned char Vit
+    /* this+0x69 */ unsigned char Int
+    /* this+0x6a */ unsigned char Dex
+    /* this+0x6b */ unsigned char Luk
+    /* this+0x6c */ unsigned char CharNum
+    /* this+0x6d */ unsigned char haircolor
+    /* this+0x6e */ short bIsChangedCharName
+    /* this+0x84 */ int Robe
+  }
+}
+
 // packet 0x835
 struct PACKET_CZ_SEARCH_STORE_INFO {
   /* this+0x0 */ short PacketType
@@ -6923,4 +7087,200 @@ struct PACKET_CH_SELECT_ACCESSIBLE_MAPNAME {
   /* this+0x0 */ short PacketType
   /* this+0x2 */ unsigned char CharNum
   /* this+0x3 */ unsigned char mapListNum
+}
+
+// packet 0x856
+struct PACKET_ZC_NOTIFY_MOVEENTRY8 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ unsigned char objecttype
+  /* this+0x5 */ unsigned long GID
+  /* this+0x9 */ short speed
+  /* this+0xb */ short bodyState
+  /* this+0xd */ short healthState
+  /* this+0xf */ int effectState
+  /* this+0x13 */ short job
+  /* this+0x15 */ short head
+  /* this+0x17 */ int weapon
+  /* this+0x1b */ short accessory
+  /* this+0x1d */ unsigned long moveStartTime
+  /* this+0x21 */ short accessory2
+  /* this+0x23 */ short accessory3
+  /* this+0x25 */ short headpalette
+  /* this+0x27 */ short bodypalette
+  /* this+0x29 */ short headDir
+  /* this+0x2b */ short robe
+  /* this+0x2d */ unsigned long GUID
+  /* this+0x31 */ short GEmblemVer
+  /* this+0x33 */ short honor
+  /* this+0x35 */ int virtue
+  /* this+0x39 */ bool isPKModeON
+  /* this+0x3a */ unsigned char sex
+  /* this+0x3b */ unsigned char MoveData[6]
+  /* this+0x41 */ unsigned char xSize
+  /* this+0x42 */ unsigned char ySize
+  /* this+0x43 */ short clevel
+  /* this+0x45 */ short font
+}
+
+// packet 0x857
+struct PACKET_ZC_NOTIFY_STANDENTRY7 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ unsigned char objecttype
+  /* this+0x5 */ unsigned long GID
+  /* this+0x9 */ short speed
+  /* this+0xb */ short bodyState
+  /* this+0xd */ short healthState
+  /* this+0xf */ int effectState
+  /* this+0x13 */ short job
+  /* this+0x15 */ short head
+  /* this+0x17 */ int weapon
+  /* this+0x1b */ short accessory
+  /* this+0x1d */ short accessory2
+  /* this+0x1f */ short accessory3
+  /* this+0x21 */ short headpalette
+  /* this+0x23 */ short bodypalette
+  /* this+0x25 */ short headDir
+  /* this+0x27 */ short robe
+  /* this+0x29 */ unsigned long GUID
+  /* this+0x2d */ short GEmblemVer
+  /* this+0x2f */ short honor
+  /* this+0x31 */ int virtue
+  /* this+0x35 */ bool isPKModeON
+  /* this+0x36 */ unsigned char sex
+  /* this+0x37 */ unsigned char PosDir[3]
+  /* this+0x3a */ unsigned char xSize
+  /* this+0x3b */ unsigned char ySize
+  /* this+0x3c */ unsigned char state
+  /* this+0x3d */ short clevel
+  /* this+0x3f */ short font
+}
+
+// packet 0x858
+struct PACKET_ZC_NOTIFY_NEWENTRY6 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ unsigned char objecttype
+  /* this+0x5 */ unsigned long GID
+  /* this+0x9 */ short speed
+  /* this+0xb */ short bodyState
+  /* this+0xd */ short healthState
+  /* this+0xf */ int effectState
+  /* this+0x13 */ short job
+  /* this+0x15 */ short head
+  /* this+0x17 */ int weapon
+  /* this+0x1b */ short accessory
+  /* this+0x1d */ short accessory2
+  /* this+0x1f */ short accessory3
+  /* this+0x21 */ short headpalette
+  /* this+0x23 */ short bodypalette
+  /* this+0x25 */ short headDir
+  /* this+0x27 */ short robe
+  /* this+0x29 */ unsigned long GUID
+  /* this+0x2d */ short GEmblemVer
+  /* this+0x2f */ short honor
+  /* this+0x31 */ int virtue
+  /* this+0x35 */ bool isPKModeON
+  /* this+0x36 */ unsigned char sex
+  /* this+0x37 */ unsigned char PosDir[3]
+  /* this+0x3a */ unsigned char xSize
+  /* this+0x3b */ unsigned char ySize
+  /* this+0x3c */ short clevel
+  /* this+0x3e */ short font
+}
+
+// packet 0x859
+struct PACKET_ZC_EQUIPWIN_MICROSCOPE2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short Length
+  /* this+0x4 */ char characterName[24]
+  /* this+0x1c */ short job
+  /* this+0x1e */ short head
+  /* this+0x20 */ short accessory
+  /* this+0x22 */ short accessory2
+  /* this+0x24 */ short accessory3
+  /* this+0x26 */ short robe
+  /* this+0x28 */ short headpalette
+  /* this+0x2a */ short bodypalette
+  /* this+0x2c */ unsigned char sex
+}
+
+// packet 0x8af
+struct PACKET_HC_WAITING_LOGIN {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ int CurWaitingNum
+}
+
+// packet 0x8b0
+struct PACKET_CH_WAITING_LOGIN {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ int AuthCode
+  /* this+0xa */ unsigned long userLevel
+  /* this+0xe */ unsigned short clientType
+  /* this+0x10 */ unsigned char Sex
+}
+
+// packet 0x8b7
+struct PACKET_HC_SECOND_PASSWD_REQ {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ unsigned long Seed
+}
+
+// packet 0x8b8
+struct PACKET_CH_SECOND_PASSWD_ACK {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ char SecondPWIdx[6]
+}
+
+// packet 0x8b9
+struct PACKET_HC_SECOND_PASSWD_LOGIN {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short Result
+}
+
+// packet 0x8ba
+struct PACKET_CH_MAKE_SECOND_PASSWD {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ unsigned long Seed
+  /* this+0xa */ char SecondPWIdx[6]
+}
+
+// packet 0x8bb
+struct PACKET_HC_MAKE_SECOND_PASSWD {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short Result
+}
+
+// packet 0x8bc
+struct PACKET_CH_DELETE_SECOND_PASSWD {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ unsigned long Seed
+  /* this+0xa */ char SecondPWIdx[6]
+}
+
+// packet 0x8bd
+struct PACKET_HC_DELETE_SECOND_PASSWD {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short Result
+}
+
+// packet 0x8be
+struct PACKET_CH_EDIT_SECOND_PASSWD {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ unsigned long Seed
+  /* this+0xa */ char SecondPWIdx[6]
+}
+
+// packet 0x8bf
+struct PACKET_HC_EDIT_SECOND_PASSWD {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short Result
 }

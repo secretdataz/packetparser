@@ -3,14 +3,17 @@ date_default_timezone_set('Asia/Seoul');
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 $intxt = fopen("struct.txt", 'r') or exit("Unable to open struct.txt");
-$outtxt = fopen("../../mode/full_info.php", 'w');
+//$outtxt = fopen("../../mode/full_info.php", 'w');
+$outtxt = fopen("full_info.php", 'w');
 $desc = fopen("func.txt", 'w');
 fwrite($outtxt, "<?php\n");
 $packetid = null;
 $aegisname =  null;
 $descline = null;
+$line_num = 1;
 while (!feof($intxt)) {
 	$line = fgets($intxt);
+	$line_num++;
     // packet id comment
     if (preg_match('%^(// (packet 0x(.*)))%', $line, $m)) {
         $packetid = trim($m[2]);
@@ -192,7 +195,7 @@ while (!feof($intxt)) {
         continue;
     }
     // $aegisname
-    echo "unsupported line # $line";
+    echo "unsupported line # $line_num $line";
 }
 fwrite($outtxt, "?>\n");
 fclose($intxt);

@@ -58,7 +58,7 @@ function PACKET_ZC_CLOSE_DIALOG($parser){
 }
 
 function PACKET_ZC_MENU_LIST($parser){
-	$select = $parser->string($parser->word(2)-8,8);
+	$select = $parser->string($parser->word(2)-9,8);
 	$parser->menu_list = explode(":",":".$select); // begin with : to create a blank entry at begining
 	$parser->menu_list[255] = "cancel clicked";
 	echo_save($parser,"switch(select(\"$select\") {");
