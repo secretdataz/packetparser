@@ -1,19 +1,15 @@
 <?php
 
-// class npc_ripper extends parser {
-	// public $npc_list = array();
-	// public $data = array();
-	// public $menu_list = array();
-// }
-
 // packet_parser functions
 function PP_MODE_INIT($parser) {
-	//global $npc_list = array();
-	//global $data = array();
 	$parser->mode["mode_name"] = "eAthena_npc";	//
 	$parser->mode["extra_bytes"] = false;		// warning about extra packet data
 	$parser->mode["debug"] = true;				// write packets to file
 	$parser->mode["save_npc"] = true;
+	
+	$parser->data['talking_to_npc'] = false;
+	$parser->data['money'] = false;
+	$parser->data['indent'] = 0;
 	
 	if($parser->mode["debug"]) {
 		$debug_filename = "debug/".date("Ymd-gis").".txt";
@@ -26,33 +22,38 @@ function PP_MODE_INIT($parser) {
 }
 
 function echo_save($parser, $text){
+	if($parser->data['indent'] < 0)
+		$parser->data['indent'] = 0;
+	$text = str_repeat("\t",$parser->data['indent']) . $text . "\n";
 	echo $text;
 	fwrite($parser->npc_file, $text);
 }
 
 function PACKET_HC_NOTIFY_ZONESVR($parser) {
 	$parser->data['map'] = $parser->string(16, 6);
-	$parser->data['talking_to_npc'] = false;
-	$parser->data['money'] = false;
 }
 
 function PACKET_ZC_SAY_DIALOG($parser){
     $gid = $parser->long(4);
     if($parser->data['talking_to_npc'] == false){
-        $parser->data['talking_to_npc'] = true;
-        echo_save($parser,"\n\n".$parser->npc_list[$gid]['map'].",".$parser->npc_list[$gid]['x'].",".$parser->npc_list[$gid]['y'].","."4"."\tscript\t".$parser->npc_list[$gid]['name']."\t".$parser->npc_list[$gid]['job'].",{\n");
-        echo_save($parser,"OnClick:\n");
+        $parser->data['talking_to_npc'] = $gid;
+        echo_save($parser,"\n\n".$parser->npc_list[$gid]['map'].",".$parser->npc_list[$gid]['x'].",".$parser->npc_list[$gid]['y'].","."4"."\tscript\t".$parser->npc_list[$gid]['name']."\t".$parser->npc_list[$gid]['job'].",{");
+        echo_save($parser,"OnClick:");
+		$parser->data['indent'] = $parser->data['indent'] + 1;
     }
-    echo_save($parser,"\tmes \"" .$parser->string($parser->word(2)-8,8) ."\";\n");
+    echo_save($parser,"mes \"" .$parser->string($parser->word(2)-8,8) ."\";");
 }
 
 function PACKET_ZC_WAIT_DIALOG($parser){
-    echo_save($parser,"\tnext;\n");
+    echo_save($parser,"next;");
 }
 
 function PACKET_ZC_CLOSE_DIALOG($parser){
-    echo_save($parser,"\tclose2;\n");
-    echo_save($parser,"end;\n");
+    echo_save($parser,"close2;");
+	$parser->data['indent'] = $parser->data['indent'] - 1;
+    echo_save($parser,"end;");
+	$parser->data['indent'] = $parser->data['indent'] - 1;
+	echo_save($parser,"}");
     $parser->data['talking_to_npc'] = false;
 }
 
@@ -60,13 +61,14 @@ function PACKET_ZC_MENU_LIST($parser){
 	$select = $parser->string($parser->word(2)-8,8);
 	$parser->menu_list = explode(":",":".$select); // begin with : to create a blank entry at begining
 	$parser->menu_list[255] = "cancel clicked";
-	echo_save($parser,"\tswitch(select(\"$select\") {\n");
+	echo_save($parser,"switch(select(\"$select\") {");
 }
 
 function PACKET_CZ_CHOOSE_MENU($parser){
 	$chose = $parser->byte(6);
 	$option = $parser->menu_list[$chose];
-	echo_save($parser,"\tcase $chose: // $option\n");
+	echo_save($parser,"case $chose: // $option");
+	$parser->data['indent'] = $parser->data['indent'] + 1;
 }
 
 function PACKET_ZC_NOTIFY_STANDENTRY6($parser){
@@ -83,11 +85,11 @@ function PACKET_ZC_NOTIFY_STANDENTRY6($parser){
 }
 
 function PACKET_ZC_ADD_QUEST($parser) {
-	echo_save($parser, "\tsetquest ".$parser->long().";\n");
+	echo_save($parser, "setquest ".$parser->long().";");
 }
 
 function PACKET_ZC_DEL_QUEST($parser) {
-	echo_save($parser,"\terasequest ".$parser->long().";\n");
+	echo_save($parser,"erasequest ".$parser->long().";");
 }
 
 function PACKET_ZC_COMPASS($parser) {
@@ -97,13 +99,13 @@ function PACKET_ZC_COMPASS($parser) {
 	$y = $parser->long();
 	$id = $parser->byte();
 	$color = $parser->long();
-	echo_save($parser,"\tviewpoint $action,$x,$y,$id,$color;\n");
+	echo_save($parser,"viewpoint $action,$x,$y,$id,$color;");
 }
 
 function PACKET_ZC_SHOW_IMAGE2($parser) {
 	$imageName = $parser->string(64);
 	$type = $parser->byte();
-	echo_save($parser,"\tcutin \"$imageName\",$type;\n");
+	echo_save($parser,"cutin \"$imageName\",$type;");
 }
 
 function PACKET_ZC_NOTIFY_EXP($parser) {
@@ -115,9 +117,9 @@ function PACKET_ZC_NOTIFY_EXP($parser) {
 		return;
 	}
 	if($expType == 1){
-		echo_save($parser, "\tgetexp $amount,0;\n");
+		echo_save($parser, "getexp $amount,0;");
 	}elseif($expType == 2){
-		echo_save($parser, "\tgetexp 0,$amount;\n");
+		echo_save($parser, "getexp 0,$amount;");
 	}
 }
 
@@ -128,44 +130,43 @@ function PACKET_ZC_ITEM_PICKUP_ACK3($parser) {
 	if($parser->data['talking_to_npc'] == false){
 		return;
 	}
-	echo_save($parser,"\tgetitem $ITID,$count;\n");
+	echo_save($parser,"getitem $ITID,$count;");
 }
 
 function PACKET_ZC_OPEN_EDITDLGSTR($parser) {
-	echo_save($parser,"\tinput .@input1$;\n");
+	echo_save($parser,"input .@input1$;");
 }
 
 function PACKET_ZC_OPEN_EDITDLG($parser) {
-	echo_save($parser,"\tinput .@amount;\n");
+	echo_save($parser,"input .@amount;");
 }
 
 function PACKET_ZC_EMOTION($parser) {
 	$GID=$parser->long();
 	$type=$parser->byte();
-	if($parser->data['talking_to_npc'] == false){
-		return;
+	if($parser->data['talking_to_npc'] == $GID){
+		echo_save($parser,"emotion $type,0;"); //emotion from npc
+	}elseif($parser->$aid == $GID){
+		echo_save($parser,"emotion $type,1;"); //emotion from player
 	}
-	echo_save($parser,"\temotion $type;\n");
 }
 
 function PACKET_ZC_LONGPAR_CHANGE($parser) {
 	$varID=$parser->word();
 	$amount=$parser->long();
-	if($varID != 20){ // money
-		return;
-	}
-	if($parser->data['money'] !== false){
-		if($parser->data['talking_to_npc'] == true){
-			$diff = $amount - $parser->data['money'];
-			if($diff < 0){
-				$diff = abs($diff);
-				echo_save($parser,"\tset zeny,zeny-$diff;\n");
-			} else {
-				echo_save($parser,"\tset zeny,zeny+$diff;\n");
+	if($varID == 20){ // money
+		if($parser->data['money'] !== false){
+			if($parser->data['talking_to_npc'] == true){
+				$diff = $amount - $parser->data['money'];
+				if($diff < 0){
+					$diff = abs($diff);
+					echo_save($parser,"set zeny,zeny-$diff;");
+				} else {
+					echo_save($parser,"set zeny,zeny+$diff;");
+				}
 			}
 		}
+		$parser->data['money'] = $amount;
 	}
-	$parser->data['money'] = $amount;
-	//echo "\n#you have $amount Z\n";
 }
 ?>
