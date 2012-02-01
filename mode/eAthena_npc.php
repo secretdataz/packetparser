@@ -41,7 +41,8 @@ function PACKET_ZC_SAY_DIALOG($parser){
         echo_save($parser,"OnClick:");
 		$parser->data['indent'] = $parser->data['indent'] + 1;
     }
-    echo_save($parser,"mes \"" .$parser->string($parser->word(2)-8,8) ."\";");
+	$text = str_replace($parser->data["char_name"], "\"+strcharinfo(0)+\"" , $parser->string($parser->word(2)-8,8));
+    echo_save($parser,"mes \"$text\";");
 }
 
 function PACKET_ZC_WAIT_DIALOG($parser){
@@ -176,6 +177,20 @@ function PACKET_ZC_NOTIFY_EFFECT($parser) {
 	if($parser->data['talking_to_npc'] == $AID || $parser->$aid == $AID){
 		echo_save($parser,"misceffect $effectID;");
 	}
+}
+
+// packet 0x82d
+function PACKET_HC_ACCEPT2($parser) {
+	$charInfo = ($parser->packet_length - 29) / 116;
+	for ($i = 0; $i < $charInfo; $i++) {
+		$parser->data["char_name_$i"] = $parser->string(24,$i*116+107);
+	}
+}
+
+// packet 0x66
+function PACKET_CH_SELECT_CHAR($parser) {
+	$num = $parser->byte();
+	$parser->data["char_name"] = $parser->data["char_name_$num"];
 }
 
 ?>
