@@ -43,6 +43,8 @@ void packet_handler(u_char *param, const struct pcap_pkthdr *header, const u_cha
 
 #define ether_len 14
 int sockfd;
+int seq;
+int last_seq;
 struct sockaddr_in target; //Socket address information
 
 int main(int argc, char **argv) {   
@@ -56,11 +58,13 @@ int main(int argc, char **argv) {
 	bpf_u_int32 NetMask;
 
 	// socket to php
-	WORD wVersionRequested;
 	WSADATA wsaData;
 
-	wVersionRequested = MAKEWORD(2, 0);					// Request WinSock v2.0
-	WSAStartup(wVersionRequested, &wsaData);			// Load WinSock DLL
+    int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if(iResult != NO_ERROR) {
+        wprintf(L"WSAStartup function failed with error: %d\n", iResult);
+        return 1;
+    }
 	sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);	//Create socket
 	memset(&target, 0, sizeof(target));
 	target.sin_family = AF_INET;						// address family Internet
@@ -127,7 +131,7 @@ int main(int argc, char **argv) {
 		}
 	}
 	NetMask=0xffffff;
-	filter = "(tcp port 6900 || tcp port 7000 || tcp port 4501) && tcp[tcpflags] & tcp-push != 0";
+	filter = "(tcp port 5000 || tcp port 6000 || tcp port 6900 || tcp port 4501 || tcp port 4500 || tcp port 7000) && tcp[tcpflags] & tcp-push != 0";
 	//compile the filter
 	if(pcap_compile(fp, &fcode, filter, 1, NetMask) < 0) {
 		fprintf(stderr,"\nError compiling filter: wrong syntax.\n");
@@ -190,14 +194,37 @@ void packet_handler(u_char *param, const struct pcap_pkthdr *header, const u_cha
 	} else {
 		tcpPayload[0] = 'S'; tcpPayload[1] = 'S';
 	}
-
+	seq = th->th_seq;
+	if(seq != last_seq){
+			last_seq = seq;
+	} else {
+		return;
+	}
 	printf("Packet (%d bytes)\n", size_payload);
 	// print ip addresses and tcp ports
 	//printf("%d.%d.%d.%d.%d -> %d.%d.%d.%d.%d\n",ih->saddr.byte1,ih->saddr.byte2,ih->saddr.byte3,ih->saddr.byte4,sport,ih->daddr.byte1,ih->daddr.byte2,ih->daddr.byte3,ih->daddr.byte4,dport);
 	//printf("%x\n", *tcpPayload);
 	if(send(sockfd,(const char *)tcpPayload,size_payload,0) == SOCKET_ERROR){
 		if(connect(sockfd, (SOCKADDR *)&target, sizeof(target)) == SOCKET_ERROR){
-			printf("Parser not listening\n");
+			WSADATA wsaData;
+			int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+			if(iResult != NO_ERROR) {
+				wprintf(L"WSAStartup function failed with error: %d\n", iResult);
+				return;
+			}
+			sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);	//Create socket
+			memset(&target, 0, sizeof(target));
+			target.sin_family = AF_INET;						// address family Internet
+			target.sin_port = htons (1234);						//Port to connect on
+			target.sin_addr.s_addr = inet_addr ("127.0.0.1");	//Target IP
+			// set TCP_NODELAY for sure
+			//int optval = 1;
+			//setsockopt(sockfd, IPPROTO_IP, TCP_NODELAY, (char *)&optval, sizeof(optval));
+			if(connect(sockfd, (SOCKADDR *)&target, sizeof(target)) != SOCKET_ERROR){
+				printf("Connected to PacketParser <3\n");
+			} else {
+				wprintf(L"connect function failed with error: %ld\n", WSAGetLastError());
+			}
 		} else {
 			printf("Connected to PacketParser <3\n");
 			send(sockfd,(const char *)tcpPayload,size_payload,0);

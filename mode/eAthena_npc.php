@@ -169,4 +169,13 @@ function PACKET_ZC_LONGPAR_CHANGE($parser) {
 		$parser->data['money'] = $amount;
 	}
 }
+
+function PACKET_ZC_NOTIFY_EFFECT($parser) {
+	$AID=$parser->long();
+	$effectID=$parser->long();
+	if($parser->data['talking_to_npc'] == $AID || $parser->$aid == $AID){
+		echo_save($parser,"misceffect $effectID;");
+	}
+}
+
 ?>
