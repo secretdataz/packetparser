@@ -147,7 +147,7 @@ function PACKET_ZC_EMOTION($parser) {
 	$type=$parser->byte();
 	if($parser->data['talking_to_npc'] == $GID){
 		echo_save($parser,"emotion $type,0;"); //emotion from npc
-	}elseif($parser->$aid == $GID){
+	}elseif($parser->aid == $GID){
 		echo_save($parser,"emotion $type,1;"); //emotion from player
 	}
 }
