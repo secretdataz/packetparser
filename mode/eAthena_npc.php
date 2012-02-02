@@ -59,10 +59,10 @@ function PACKET_ZC_CLOSE_DIALOG($parser){
 }
 
 function PACKET_ZC_MENU_LIST($parser){
-	$select = $parser->string($parser->word(2)-9,8);
+	$select = $parser->string($parser->word(2)-10,8);
 	$parser->menu_list = explode(":",":".$select); // begin with : to create a blank entry at begining
 	$parser->menu_list[255] = "cancel clicked";
-	echo_save($parser,"switch(select(\"$select\") {");
+	echo_save($parser,"switch(select(\"$select\")) {");
 }
 
 function PACKET_CZ_CHOOSE_MENU($parser){
@@ -72,7 +72,7 @@ function PACKET_CZ_CHOOSE_MENU($parser){
 	$parser->data['indent'] = $parser->data['indent'] + 1;
 }
 
-function PACKET_ZC_NOTIFY_STANDENTRY6($parser){
+function PACKET_ZC_NOTIFY_STANDENTRY7($parser){
     $gid = $parser->long(5);
     $parser->npc_list[$gid]['GID'] = $parser->long(5);
     $parser->npc_list[$gid]['job'] = $parser->word(19);
