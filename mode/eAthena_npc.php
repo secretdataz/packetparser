@@ -30,7 +30,7 @@ function echo_save($parser, $text){
 }
 
 function PACKET_HC_NOTIFY_ZONESVR($parser) {
-	$parser->data['map'] = $parser->string(16, 6);
+	$parser->data['map'] = substr($parser->string(16, 6),0,-4);
 }
 
 function PACKET_ZC_SAY_DIALOG($parser){
@@ -174,7 +174,7 @@ function PACKET_ZC_LONGPAR_CHANGE($parser) {
 function PACKET_ZC_NOTIFY_EFFECT($parser) {
 	$AID=$parser->long();
 	$effectID=$parser->long();
-	if($parser->data['talking_to_npc'] == $AID || $parser->$aid == $AID){
+	if($parser->data['talking_to_npc'] == $AID || $parser->aid == $AID){
 		echo_save($parser,"misceffect $effectID;");
 	}
 }
@@ -191,6 +191,40 @@ function PACKET_HC_ACCEPT2($parser) {
 function PACKET_CH_SELECT_CHAR($parser) {
 	$num = $parser->byte();
 	$parser->data["char_name"] = $parser->data["char_name_$num"];
+}
+
+// packet 0xc4
+function PACKET_ZC_SELECT_DEALTYPE($parser) {
+	$NAID=$parser->long();
+	$map = $parser->data['map'];
+	$x = $parser->npc_list[$NAID]['x'];
+	$y = $parser->npc_list[$NAID]['y'];
+	$name = $parser->npc_list[$NAID]['name'];
+	$job = $parser->npc_list[$NAID]['job'];
+	$parser->data["shop"] = "$map,$x,$y,4\tshop\t$name\t$job";
+}
+
+// packet 0xc6
+function PACKET_ZC_PC_PURCHASE_ITEMLIST($parser) {
+	$map = $parser->data['map'];
+	$shop_filename = "trader_capture/$map.txt";
+	$shop_file = fopen($shop_filename, "w");
+	$items = "";
+	echo $parser->data["shop"] . "\n";
+	$PacketLength=$parser->word();
+	$itemList = ($parser->packet_length - $parser->packet_pointer) / 11;
+	for ($i = 0; $i < $itemList; $i++) {
+		$price=$parser->long();
+		$discountprice=$parser->long();
+		$type=$parser->byte();
+		$ITID=$parser->word();
+		$items .= ",$ITID:-1";
+		echo "  item $ITID\n";
+	}
+	echo "end of trader;\n";
+	$items .= "\n";
+	fwrite($shop_file, $parser->data["shop"] . $items);
+	fclose($shop_file);
 }
 
 ?>
