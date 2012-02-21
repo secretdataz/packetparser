@@ -12,12 +12,12 @@ function PP_MODE_INIT($parser) {
 	$parser->data['indent'] = 0;
 	
 	if($parser->mode["debug"]) {
-		$debug_filename = "debug/".date("Ymd-gis").".txt";
-		$parser->debug = fopen($debug_filename, "w");
+		$debug_filename = "debug/".date("Ymd-Gis").".txt";
+		$parser->debug = fopen($debug_filename, "w+");
 	}
 	if($parser->mode["save_npc"]) {
-		$npc_filename = "npc_capture/".date("Ymd-gis").".txt";
-		$parser->npc_file = fopen($npc_filename, "w");
+		$npc_filename = "npc_capture/".date("Ymd-Gis").".txt";
+		$parser->npc_file = fopen($npc_filename, "w+");
 	}
 }
 
