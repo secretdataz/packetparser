@@ -300,6 +300,9 @@ class parser {
 				$this->packet_desc = "| $this->packet_num |  $this->packet_dir  | $this->packet_id | $this->packet_desc |";
 				$this->packet_pointer = 2; // packet_id // pointer used for extra byte checking
 				if(function_exists($this->p_funcs[$this->packet_id])) {
+					if($this->mode["time_output"]) {
+						PP_TIME_OUTPUT($this);
+					}
 					$this->p_funcs[$this->packet_id]($this);
 					if($this->mode["extra_bytes"]) {
 						$this->end_packet();

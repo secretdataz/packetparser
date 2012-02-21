@@ -5,7 +5,9 @@ function PP_MODE_INIT($parser) {
 	$parser->mode["mode_name"] = "full_info";	//
 	$parser->mode["extra_bytes"] = true;		// warning about extra packet data
 	$parser->mode["debug"] = true;				// write packets to file
-	$parser->mode["save_output"] = true;		// write output to log file
+	$parser->mode["save_output"] = true;		// write console output to log file
+	$parser->mode["time_output"] = true;		// echo time after every packet
+	$parser->mode["time_started"] = false;		// 
 	
 	$parser->nl = "|     |     |      |                                                    |";
 	$parser->br = "|.....|.....|......|....................................................|...............................\n";
@@ -17,6 +19,9 @@ function PP_MODE_INIT($parser) {
 	if($parser->mode["save_output"]) {
 		$log_filename = "output_log/".date("Ymd-Gis").".txt";
 		$parser->log_file = fopen($log_filename, "w+");
+	}
+	if($parser->mode["time_output"]){
+		$parser->mode["start_time"] = microtime(true);
 	}
 }
 
@@ -38,6 +43,17 @@ function PP_PACKET_SPLIT($parser) {
 }
 
 function PP_LINE_BREAK($parser) {
+	echo_save($parser, $parser->br);
+}
+
+function PP_TIME_OUTPUT($parser) {
+	if(!$parser->mode["time_started"]) {
+		$parser->mode["time_started"] = true;
+		$parser->mode["start_time"] = microtime(true);
+	}
+	$packet_time = microtime(true) - $parser->mode["start_time"];
+	list($usec, $sec) = explode(" ", microtime());
+	echo_save($parser, "| The next packet at ".$packet_time."  -   ".$sec."  \n");
 	echo_save($parser, $parser->br);
 }
 
