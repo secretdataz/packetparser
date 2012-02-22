@@ -5429,6 +5429,8 @@ function PACKET_ZC_MSG_STATE_CHANGE2($parser) {
 	echo_save($parser, "$parser->nl state=".$parser->byte()."\n");
 	echo_save($parser, "$parser->nl RemainMS=".$parser->long()."\n");
 	echo_save($parser, "$parser->nl val=".$parser->long()."\n");
+	echo_save($parser,  "$parser->nl val2=".$parser->long()."\n");
+	echo_save($parser,  "$parser->nl val3=".$parser->long()."\n");
 }
 
 // packet 0x440
