@@ -300,7 +300,7 @@ class parser {
 				$this->packet_desc = "| $this->packet_num |  $this->packet_dir  | $this->packet_id | $this->packet_desc |";
 				$this->packet_pointer = 2; // packet_id // pointer used for extra byte checking
 				if(function_exists($this->p_funcs[$this->packet_id])) {
-					if($this->mode["mode_name"] == "full_info" && $this->mode["time_output"]) {
+					if(function_exists('PP_TIME_OUTPUT') && $this->mode["time_output"]) {
 						PP_TIME_OUTPUT($this);
 					}
 					$this->p_funcs[$this->packet_id]($this);
@@ -310,7 +310,11 @@ class parser {
 				}
 			} else {
 				// cannot find packet length
-				die("Packet length not found for $this->packet_id\nMake sure data/packet/plen is correct for client\n\n");
+				//die("Packet length not found for $this->packet_id\nMake sure data/packet/plen is correct for client\n\n");
+				if(function_exists('PP_PLEN_ERROR')) {
+					PP_PLEN_ERROR($this);
+				}
+				return;
 			}
 		}
 		if(function_exists("PP_LINE_BREAK")) {

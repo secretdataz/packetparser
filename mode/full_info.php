@@ -38,6 +38,11 @@ function PP_AEGIS_GID($parser) {
 	echo_save($parser, "| $parser->packet_num |  $parser->packet_dir  |     | Account_ID\n");
 }
 
+function PP_PLEN_ERROR($parser) {
+	$remainder = strlen($parser->stream);
+	echo_save($parser, "| $parser->packet_num |  ##  | Packet_ID $parser->packet_id Not Found - Skipping $remainder Bytes \n");
+}
+
 function PP_PACKET_SPLIT($parser) {
 	echo_save($parser, "| $parser->packet_num |  $parser->packet_dir  | $parser->packet_id | Packet Not Complete                                |\n");
 }
