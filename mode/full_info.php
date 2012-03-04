@@ -6603,4 +6603,24 @@ function PACKET_HC_EDIT_SECOND_PASSWD($parser) {
 	echo_save($parser, "$parser->packet_desc Result=".$parser->word()."\n");
 }
 
+function PACKET_ZC_ADD_SKILL_UNIT_GROUP_($parser) {
+	echo_save($parser, "$parser->packet_desc length=".$parser->word()."\n");
+	echo_save($parser, "$parser->nl unit_id=".$parser->long()."\n");
+	echo_save($parser, "$parser->nl src_id=".$parser->long()."\n");
+	echo_save($parser, "$parser->nl x=".$parser->word()."\n");
+	echo_save($parser, "$parser->nl y=".$parser->word()."\n");
+	echo_save($parser, "$parser->nl type=".$parser->byte()."\n");
+	echo_save($parser, "$parser->nl range=".$parser->byte()."\n");
+	echo_save($parser, "$parser->nl visible=".$parser->byte()."\n");
+}
+
+function PACKET_ZC_HOMSKILLUP($parser) {
+	echo_save($parser, "$parser->packet_desc skill_id=".$parser->word()."\n");
+	echo_save($parser, "$parser->nl skill_lv=".$parser->word()."\n");
+	echo_save($parser, "$parser->nl req_sp=".$parser->word()."\n");
+	echo_save($parser, "$parser->nl range=".$parser->word()."\n");
+	echo_save($parser, "$parser->nl raisable=".$parser->byte()."\n");
+}
+
+
 ?>
