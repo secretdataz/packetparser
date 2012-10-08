@@ -131,7 +131,8 @@ int main(int argc, char **argv) {
 		}
 	}
 	NetMask=0xffffff;
-	filter = "(tcp port 5000 || tcp port 6000 || tcp port 6900 || tcp port 4501 || tcp port 4500 || tcp port 7000) && tcp[tcpflags] & tcp-push != 0";
+	//filter = "(tcp port 5000 || tcp port 6000 || tcp port 6900 || tcp port 4501 || tcp port 4500 || tcp port 7000) && tcp[tcpflags] & tcp-push != 0";
+	filter = "(tcp port 5000 || tcp port 6000 || tcp port 6900 || tcp port 4501 || tcp port 4500 || tcp port 7000)";
 	//compile the filter
 	if(pcap_compile(fp, &fcode, filter, 1, NetMask) < 0) {
 		fprintf(stderr,"\nError compiling filter: wrong syntax.\n");
@@ -194,16 +195,18 @@ void packet_handler(u_char *param, const struct pcap_pkthdr *header, const u_cha
 	} else {
 		tcpPayload[0] = 'S'; tcpPayload[1] = 'S';
 	}
-	seq = th->th_seq;
-	if(seq != last_seq){
-			last_seq = seq;
-	} else {
-		return;
+	if(sport == 6900 || sport == 7000 || sport == 4501){
+		last_seq = th->th_seq;
+		seq += (th->th_seq - last_seq);
+		printf("Seq %u\n", seq);
 	}
-	printf("Packet (%d bytes)\n", size_payload);
+	
+	//printf("Packet (%d bytes)\n", size_payload);
+	//printf("Packet (%d bytes)\n", th->th_seq);
 	// print ip addresses and tcp ports
 	//printf("%d.%d.%d.%d.%d -> %d.%d.%d.%d.%d\n",ih->saddr.byte1,ih->saddr.byte2,ih->saddr.byte3,ih->saddr.byte4,sport,ih->daddr.byte1,ih->daddr.byte2,ih->daddr.byte3,ih->daddr.byte4,dport);
 	//printf("%x\n", *tcpPayload);
+	/*
 	if(send(sockfd,(const char *)tcpPayload,size_payload,0) == SOCKET_ERROR){
 		if(connect(sockfd, (SOCKADDR *)&target, sizeof(target)) == SOCKET_ERROR){
 			WSADATA wsaData;
@@ -230,4 +233,5 @@ void packet_handler(u_char *param, const struct pcap_pkthdr *header, const u_cha
 			send(sockfd,(const char *)tcpPayload,size_payload,0);
 		}
 	}
+	*/
 }

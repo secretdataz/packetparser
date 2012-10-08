@@ -56,18 +56,52 @@ class parser {
 	
 	function load_plen() {
 		echo "\nPacket Length Tables -\n";
-		$modes = glob("./data/packet/plen*.txt");
+		$modes = glob("./data/packet/{plen*.txt,recvpackets*.txt}", GLOB_BRACE);
 		if (sizeof($modes) == 0) {
 			die("Place packet lengths inside the data/packet folder\n");
 		}
 		foreach ($modes as $i => $mode) {
-			echo $i . ": " . basename($mode,".txt") . "\r\n";
+			echo " " . $i . ": " . basename($mode,".txt") . "\r\n";
 		}
 		fwrite(STDOUT, "\nWhich plen to use? ");
 		$choice = trim(fgets(STDIN));
 		if (isset($modes[$choice])) {
 			$mode = $modes[$choice];
 			$this->load_data($mode,		"p_lens");
+		} else {
+			die("Bad choice\n");
+		}
+	}
+	
+	function load_pac(){
+		echo "\nWPE Packet Captures -\n";
+		$pacs = glob("./pacs/*.pac");
+		if (sizeof($pacs) == 0)
+			die("Place packet captures inside the pacs folder\n");
+		foreach ($pacs as $i => $pac) {
+			echo $i . ": " . basename($pac) . "\n";
+		}
+		fwrite(STDOUT, "\nParse which capture? ");
+		$choice = trim(fgets(STDIN));
+		if (isset($pacs[$choice])) {
+			return $pacs[$choice];
+		} else {
+			die("Bad choice\n");
+		}
+	}
+	
+	function load_wireshark(){
+		echo "\nWireShark Packet Captures -\n";
+		$pacs = glob("./wireshark/*.txt");
+		if (sizeof($pacs) == 0)
+			die("Place packet captures inside the wireshark folder\n");
+		foreach ($pacs as $i => $pac) {
+			echo $i . ": " . basename($pac) . "\n";
+		}
+		fwrite(STDOUT, "\nParse which capture? ");
+		$choice = trim(fgets(STDIN));
+		if (isset($pacs[$choice])) {
+			return $pacs[$choice];
 		} else {
 			die("Bad choice\n");
 		}
@@ -80,7 +114,7 @@ class parser {
 			die("Place modes inside the mode folder\n");
 		}
 		foreach ($modes as $i => $mode) {
-			echo $i . ": " . basename($mode,".php") . "\r\n";
+			echo " " . $i . ": " . basename($mode,".php") . "\r\n";
 		}
 		fwrite(STDOUT, "\nWhich mode to use? ");
 		$choice = trim(fgets(STDIN));
@@ -297,6 +331,8 @@ class parser {
 				}
 				// packet_desc should be made in mode/full_info.php - but here is fine for now
 				$this->packet_desc = str_pad($this->p_funcs[$this->packet_id], 50, " ");
+				if(!$this->packet_dir)
+					$this->packet_dir = " ";
 				$this->packet_desc = "| $this->packet_num |  $this->packet_dir  | $this->packet_id | $this->packet_desc |";
 				$this->packet_pointer = 2; // packet_id // pointer used for extra byte checking
 				if(function_exists($this->p_funcs[$this->packet_id])) {

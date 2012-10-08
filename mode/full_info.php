@@ -6,7 +6,7 @@ function PP_MODE_INIT($parser) {
 	$parser->mode["extra_bytes"] = true;		// warning about extra packet data
 	$parser->mode["debug"] = true;				// write packets to file
 	$parser->mode["save_output"] = true;		// write console output to log file
-	$parser->mode["time_output"] = true;		// echo time after every packet
+	$parser->mode["time_output"] = false;		// echo time after every packet
 	$parser->mode["time_started"] = false;		// 
 	
 	$parser->nl = "|     |     |      |                                                    |";
@@ -35,15 +35,20 @@ function PP_FUNC_NOT_DEFINED($parser) {
 }
 
 function PP_AEGIS_GID($parser) {
+	if(!$parser->packet_dir)
+		$parser->packet_dir = " ";
 	echo_save($parser, "| $parser->packet_num |  $parser->packet_dir  |     | Account_ID\n");
 }
 
 function PP_PLEN_ERROR($parser) {
 	$remainder = strlen($parser->stream);
-	echo_save($parser, "| $parser->packet_num |  ##  | Packet_ID $parser->packet_id Not Found - Skipping $remainder Bytes \n");
+	echo_save($parser, "| $parser->packet_num |     | $parser->packet_id | Packet_ID Not Found                                | Skipping $remainder Bytes \n");
+	echo_save($parser, $parser->br);
 }
 
 function PP_PACKET_SPLIT($parser) {
+	if(!$parser->packet_dir)
+		$parser->packet_dir = " ";
 	echo_save($parser, "| $parser->packet_num |  $parser->packet_dir  | $parser->packet_id | Packet Not Complete                                |\n");
 }
 
