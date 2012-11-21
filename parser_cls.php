@@ -305,10 +305,11 @@ class parser {
 			// ####
 			if(array_key_exists($this->packet_id, $this->p_lens)) {
 				$this->packet_length = $this->p_lens[$this->packet_id];
-				if(!$this->packet_length) {
+				if(!$this->packet_length || $this->packet_length == "-1") {
 					// Get packet length from packet
 					$this->packet_length = $this->unpack2("@2/S", $this->stream);
 				}
+				//echo "#".strlen($this->stream)."#".$this->packet_length."#\n";
 				if(strlen($this->stream) < $this->packet_length) {
 					// Packet is not complete
 					if(function_exists('PP_PACKET_SPLIT')) {

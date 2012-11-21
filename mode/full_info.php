@@ -6569,7 +6569,9 @@ function PACKET_CH_SECOND_PASSWD_ACK($parser) {
 
 // packet 0x8b9
 function PACKET_HC_SECOND_PASSWD_LOGIN($parser) {
-	echo_save($parser, "$parser->packet_desc Result=".$parser->word()."\n");
+	echo_save($parser, "$parser->packet_desc Seed=".$parser->long()."\n");
+	echo_save($parser, "$parser->nl AID=".$parser->long()."\n");
+	echo_save($parser, "$parser->nl Result=".$parser->word()."\n");
 }
 
 // packet 0x8ba
