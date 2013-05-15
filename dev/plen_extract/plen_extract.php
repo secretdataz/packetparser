@@ -21,7 +21,7 @@ ini_set("display_errors", 1);
 	
 	
 	$exe = new RObin();
-	$exe->load($clients[$choice],false);
+	$exe->load($clients[$choice],true);
 	
         if($exe->clientdate() >= 20120710){
 			// strange addition, new function called

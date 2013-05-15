@@ -21,6 +21,7 @@ class RObin
     private $sections;
     private $client_date = 0;
     private $crc = 0;
+    public $themida = false;
     
     // Loads file from $path
     public function load($path,$debug=false)
@@ -34,30 +35,35 @@ class RObin
         $this->size = strlen($file);
         
         $this->PEHeader = $this->match("\x50\x45\x00\x00");
-        if($debug) echo "<br>DiffGen Core Loaded..<br><br>PE Header&nbsp;&nbsp;".dechex($this->PEHeader)."h<br>";
+        if($debug) echo "PE Header\t".dechex($this->PEHeader)."h\n";
         
         // If the loaded file isn't a valid PE file, then it's not necessary to continue
         // with the diff process anyway, so just die~ >:)
         if($this->PEHeader === false)
-            die("Invalid PE file used!<br>");
+            die("Invalid PE file used!\n");
             
         $this->image_base = $this->read($this->PEHeader + 0x34, 4, "V");
-        if($debug) echo "Image Base&nbsp;&nbsp;".dechex($this->image_base)."h<br>";
+        if($debug) echo "Image Base\t".dechex($this->image_base)."h\n";
         
         $date = $this->read($this->PEHeader+8, 4, 'V');
         $this->client_date = date('Y', $date) * 10000 + date('m', $date) * 100 + date('d', $date);
-        if($debug) echo "Client Date&nbsp;&nbsp;".$this->client_date."<br>";
+        if($debug) echo "Client Date\t".$this->client_date."\n";
         
-        if($debug) echo "<br>Name&nbsp;&nbsp;vSize&nbsp;&nbsp;vOffset&nbsp;&nbsp;rSize&nbsp;&nbsp;rOffset&nbsp;&nbsp;vrDiff<br>";
-        if($debug) echo "----&nbsp;&nbsp;-----&nbsp;&nbsp;-------&nbsp;&nbsp;-----&nbsp;&nbsp;-------&nbsp;&nbsp;------<br>";
+        if($debug) echo "\nName\tvSize\tvOffset\trSize\trOffset\tvrDiff\n";
+        if($debug) echo "----\t-----\t-------\t-----\t-------\t------\n";
         // Get section information
         $sectionCount = $this->read($this->PEHeader + 0x6, 2, "S");
+		$sectionInfo = array();
         for($i = 0, $curSection = $this->PEHeader + 0x18 + 0x60 + 0x10 * 0x8; $i < $sectionCount; $i++) {
             // http://www.microsoft.com/whdc/system/platform/firmware/PECOFFdwn.mspx
             $sectionInfo['name'] = $this->read($curSection, 8);
             // Also: There's also possibility that a new inserted section name could contain some trash bytes after
             // the zero terminator. So get rid of them..
-            $sectionInfo['name'] = substr($sectionInfo['name'], 0, strpos($sectionInfo['name'], "\x00"));
+            $sectionInfo['name']          = trim($sectionInfo['name']);
+            if(!$sectionInfo['name']){
+                $sectionInfo['name'] = "sect_".$i;
+                $this->themida = true;
+            }
 
             $sectionInfo['vSize']         = $this->read($curSection+8+0*4, 4, "V");
             $sectionInfo['vOffset']       = $this->read($curSection+8+1*4, 4, "V");
@@ -68,14 +74,14 @@ class RObin
             $sectionInfo['vrDiff']        = $sectionInfo['vOffset'] - $sectionInfo['rOffset'];
             // This is used to indicate if code has been placed after vEnd
             $sectionInfo['align']         = 0;
-            $tab = "&nbsp;&nbsp;";
+            $tab = "\t";
             if($debug) 
-            echo  $sectionInfo['name'] . $tab
-                . dechex($sectionInfo['vSize']) . $tab
-                . dechex($sectionInfo['vOffset']) . $tab
-                . dechex($sectionInfo['rSize']) . $tab
-                . dechex($sectionInfo['rOffset']) . $tab
-                . dechex($sectionInfo['vrDiff']) . "<br>";
+            echo  $sectionInfo['name'] . "\t"
+                . dechex($sectionInfo['vSize']) . "\t"
+                . dechex($sectionInfo['vOffset']) . "\t"
+                . dechex($sectionInfo['rSize']) . "\t"
+                . dechex($sectionInfo['rOffset']) . "\t"
+                . dechex($sectionInfo['vrDiff']) . "\n";
             // Convert to object for easier access
             // E.g: $exe->getSection(".rdata")->rOffset...
             $this->sections[$sectionInfo['name']] = new stdClass();
@@ -88,12 +94,14 @@ class RObin
 
             $curSection += 0x28;
         }
-        
+
+        //print_r($this->sections);
+        //die();
         // Prepare XMLWriter for xDiff
         $this->xmlWriter = new XMLWriter();
         $this->xmlWriter->openMemory();
         $this->xmlWriter->setIndent(true);
-        $this->xmlWriter->setIndentString("&nbsp;&nbsp;");
+        $this->xmlWriter->setIndentString("\t");
 				$this->xmlWriter->startDocument('1.0', 'ISO-8859-1');
         $this->xmlWriter->startElement('diff');
         
@@ -127,7 +135,7 @@ class RObin
         $data = substr($this->exe, $offset, $size);
         if (strlen($data) != $size) {
             // if read size was not $size
-            echo bin2hex($data) . "<br>";
+            echo bin2hex($data) . "\n";
             return false;
         }
         if (is_string($format)) {
@@ -159,7 +167,6 @@ class RObin
         if (($length < 1) || ($start >= $this->size-$length) || ($finish <= $start)) {
             return false;
         }
-        $pos = 0;
         $offset = $start;
         // Is there a wildcard?
         if (strlen($wildcard) == 1) {
@@ -312,7 +319,7 @@ class RObin
         foreach ($replace as $pos => $value) {
 						if (substr($value,0,1) == '$')// input variable (xDiff)    
 						{
-							echo 'input: '.$value. "<br>";
+							echo 'input: '.$value. " : ";
 						  $change = new xPatchChange();
 	            $change->setType(XTYPE_BYTE);
 	            $change->setOffset($offset + $pos);
@@ -422,15 +429,19 @@ class RObin
     // matches.
     public function code($code, $wildcard, $count = 1)
     {
-        //echo "#code()#";
-        $section = $this->getSection(".text");
+
+        if($this->themida)
+            $section = $this->getSection("sect_0");
+        else
+            $section = $this->getSection(".text");
+
         $offsets = $this->matches($code, $wildcard, $section->rOffset, $section->rOffset + $section->rSize);
-        
+        //echo var_dump($offsets);
         if (($count != -1) && (count($offsets) != $count)){
             echo "#code() found ".count($offsets)." matches# ";
             return false;
         }
-        if (($count == -1) && count($offsets) == 0){
+        if ($offsets == false){
             echo "#code() found no matches# ";
             return false;
         }
@@ -445,16 +456,21 @@ class RObin
     {
         $tick = microtime(true);
         $iBase = $this->imagebase();
-        $section = $this->getSection(".rdata");
+
+        if($this->themida)
+            $section = $this->getSection("sect_0");
+        else
+            $section = $this->getSection(".rdata");
+
         $virtual = $section->vOffset - $section->rOffset;
-        $offset = $this->match("\x00".$str."\x00", "", $section->rOffset, $section->rOffset + $section->rSize) + 1;
+        $offset = $this->match("\x00".$str."\x00", "", $section->rOffset, $section->rOffset + $section->rSize);
         if ($offset === false) {
             return false;
         }
         if($type == "rva")
-            return $offset + $virtual + $iBase;
+            return $offset + 1 + $virtual + $iBase;
         if($type == "raw")
-            return $offset;
+            return $offset + 1;
         return false;
     }
     
@@ -468,7 +484,12 @@ class RObin
     {
         $tick = microtime(true);
         $iBase = $this->imagebase();
-        $section = $this->getSection(".rdata");
+        
+        if($this->themida)
+            $section = $this->getSection("sect_0");
+        else
+            $section = $this->getSection(".rdata");
+
         $virtual = $section->vOffset - $section->rOffset;
         if ($str) {
             // It has to resolve the name or something... can't remember
@@ -485,7 +506,7 @@ class RObin
     }
     
     // XDIFF
-		public function writeDiffFile($filePath)
+	public function writeDiffFile($filePath)
     {
     	//print_r($this->xDiff);
     	$this->xmlWriter->startElement('patches');
