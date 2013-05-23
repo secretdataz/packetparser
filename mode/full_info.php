@@ -7544,4 +7544,386 @@ function PACKET_ZC_NOTIFY_CLAN_CHAT($parser) {
 	echo "$parser->nl chat=".$parser->string($parser->packet_length - $parser->packet_pointer)."\n";
 }
 
+// packet 0x990
+function PACKET_ZC_ITEM_PICKUP_ACK_V5($parser) {
+	echo "$parser->packet_desc Index=".$parser->word()."\n";
+	echo "$parser->nl count=".$parser->word()."\n";
+	echo "$parser->nl ITID=".$parser->word()."\n";
+	echo "$parser->nl IsIdentified=".$parser->byte()."\n";
+	echo "$parser->nl IsDamaged=".$parser->byte()."\n";
+	echo "$parser->nl refiningLevel=".$parser->byte()."\n";
+		echo "$parser->nl card1=".$parser->word()."\n";
+		echo "$parser->nl card2=".$parser->word()."\n";
+		echo "$parser->nl card3=".$parser->word()."\n";
+		echo "$parser->nl card4=".$parser->word()."\n";
+	echo "$parser->nl location=".$parser->long()."\n";
+	echo "$parser->nl type=".$parser->byte()."\n";
+	echo "$parser->nl result=".$parser->byte()."\n";
+	echo "$parser->nl HireExpireDate=".$parser->long()."\n";
+	echo "$parser->nl bindOnEquipType=".$parser->word()."\n";
+}
+
+// packet 0x991
+function PACKET_ZC_INVENTORY_ITEMLIST_NORMAL_V5($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	$Items = ($parser->packet_length - $parser->packet_pointer) / 24;
+	for ($i = 0; $i < $Items; $i++) {
+		echo "$parser->nl index=".$parser->word()."\n";
+		echo "$parser->nl ITID=".$parser->word()."\n";
+		echo "$parser->nl type=".$parser->byte()."\n";
+		echo "$parser->nl count=".$parser->word()."\n";
+		echo "$parser->nl WearState=".$parser->long()."\n";
+		echo "$parser->nl card1=".$parser->word()."\n";
+		echo "$parser->nl card2=".$parser->word()."\n";
+		echo "$parser->nl card3=".$parser->word()."\n";
+		echo "$parser->nl card4=".$parser->word()."\n";
+		echo "$parser->nl HireExpireDate=".$parser->long()."\n";
+		echo "$parser->nl Flag=".$parser->byte()."\n";
+	}
+}
+
+// packet 0x992
+function PACKET_ZC_INVENTORY_ITEMLIST_EQUIP_V5($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	$Items = ($parser->packet_length - $parser->packet_pointer) / 27;
+	for ($i = 0; $i < $Items; $i++) {
+		echo "$parser->nl index=".$parser->word()."\n";
+		echo "$parser->nl ITID=".$parser->word()."\n";
+		echo "$parser->nl type=".$parser->byte()."\n";
+		echo "$parser->nl location=".$parser->long()."\n";
+		echo "$parser->nl WearState=".$parser->long()."\n";
+		echo "$parser->nl RefiningLevel=".$parser->byte()."\n";
+		echo "$parser->nl card1=".$parser->word()."\n";
+		echo "$parser->nl card2=".$parser->word()."\n";
+		echo "$parser->nl card3=".$parser->word()."\n";
+		echo "$parser->nl card4=".$parser->word()."\n";
+		echo "$parser->nl HireExpireDate=".$parser->long()."\n";
+		echo "$parser->nl bindOnEquipType=".$parser->word()."\n";
+		echo "$parser->nl wItemSpriteNumber=".$parser->word()."\n";
+		echo "$parser->nl Flag=".$parser->byte()."\n";
+	}
+}
+
+// packet 0x993
+function PACKET_ZC_CART_ITEMLIST_NORMAL_V5($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	$Items = ($parser->packet_length - $parser->packet_pointer) / 24;
+	for ($i = 0; $i < $Items; $i++) {
+		echo "$parser->nl index=".$parser->word()."\n";
+		echo "$parser->nl ITID=".$parser->word()."\n";
+		echo "$parser->nl type=".$parser->byte()."\n";
+		echo "$parser->nl count=".$parser->word()."\n";
+		echo "$parser->nl WearState=".$parser->long()."\n";
+		echo "$parser->nl card1=".$parser->word()."\n";
+		echo "$parser->nl card2=".$parser->word()."\n";
+		echo "$parser->nl card3=".$parser->word()."\n";
+		echo "$parser->nl card4=".$parser->word()."\n";
+		echo "$parser->nl HireExpireDate=".$parser->long()."\n";
+		echo "$parser->nl Flag=".$parser->byte()."\n";
+	}
+}
+
+// packet 0x994
+function PACKET_ZC_CART_ITEMLIST_EQUIP_V5($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	$Items = ($parser->packet_length - $parser->packet_pointer) / 27;
+	for ($i = 0; $i < $Items; $i++) {
+		echo "$parser->nl index=".$parser->word()."\n";
+		echo "$parser->nl ITID=".$parser->word()."\n";
+		echo "$parser->nl type=".$parser->byte()."\n";
+		echo "$parser->nl location=".$parser->long()."\n";
+		echo "$parser->nl WearState=".$parser->long()."\n";
+		echo "$parser->nl RefiningLevel=".$parser->byte()."\n";
+		echo "$parser->nl card1=".$parser->word()."\n";
+		echo "$parser->nl card2=".$parser->word()."\n";
+		echo "$parser->nl card3=".$parser->word()."\n";
+		echo "$parser->nl card4=".$parser->word()."\n";
+		echo "$parser->nl HireExpireDate=".$parser->long()."\n";
+		echo "$parser->nl bindOnEquipType=".$parser->word()."\n";
+		echo "$parser->nl wItemSpriteNumber=".$parser->word()."\n";
+		echo "$parser->nl Flag=".$parser->byte()."\n";
+	}
+}
+
+// packet 0x995
+function PACKET_ZC_STORE_ITEMLIST_NORMAL_V5($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	$Items = ($parser->packet_length - $parser->packet_pointer) / 24;
+	for ($i = 0; $i < $Items; $i++) {
+		echo "$parser->nl index=".$parser->word()."\n";
+		echo "$parser->nl ITID=".$parser->word()."\n";
+		echo "$parser->nl type=".$parser->byte()."\n";
+		echo "$parser->nl count=".$parser->word()."\n";
+		echo "$parser->nl WearState=".$parser->long()."\n";
+		echo "$parser->nl card1=".$parser->word()."\n";
+		echo "$parser->nl card2=".$parser->word()."\n";
+		echo "$parser->nl card3=".$parser->word()."\n";
+		echo "$parser->nl card4=".$parser->word()."\n";
+		echo "$parser->nl HireExpireDate=".$parser->long()."\n";
+		echo "$parser->nl Flag=".$parser->byte()."\n";
+	}
+}
+
+// packet 0x996
+function PACKET_ZC_STORE_ITEMLIST_EQUIP_V5($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	$Items = ($parser->packet_length - $parser->packet_pointer) / 27;
+	for ($i = 0; $i < $Items; $i++) {
+		echo "$parser->nl index=".$parser->word()."\n";
+		echo "$parser->nl ITID=".$parser->word()."\n";
+		echo "$parser->nl type=".$parser->byte()."\n";
+		echo "$parser->nl location=".$parser->long()."\n";
+		echo "$parser->nl WearState=".$parser->long()."\n";
+		echo "$parser->nl RefiningLevel=".$parser->byte()."\n";
+		echo "$parser->nl card1=".$parser->word()."\n";
+		echo "$parser->nl card2=".$parser->word()."\n";
+		echo "$parser->nl card3=".$parser->word()."\n";
+		echo "$parser->nl card4=".$parser->word()."\n";
+		echo "$parser->nl HireExpireDate=".$parser->long()."\n";
+		echo "$parser->nl bindOnEquipType=".$parser->word()."\n";
+		echo "$parser->nl wItemSpriteNumber=".$parser->word()."\n";
+		echo "$parser->nl Flag=".$parser->byte()."\n";
+	}
+}
+
+// packet 0x997
+function PACKET_ZC_EQUIPWIN_MICROSCOPE_V5($parser) {
+	echo "$parser->packet_desc Length=".$parser->word()."\n";
+	echo "$parser->nl characterName=".$parser->string(24)."\n";
+	echo "$parser->nl job=".$parser->word()."\n";
+	echo "$parser->nl head=".$parser->word()."\n";
+	echo "$parser->nl accessory=".$parser->word()."\n";
+	echo "$parser->nl accessory2=".$parser->word()."\n";
+	echo "$parser->nl accessory3=".$parser->word()."\n";
+	echo "$parser->nl robe=".$parser->word()."\n";
+	echo "$parser->nl headpalette=".$parser->word()."\n";
+	echo "$parser->nl bodypalette=".$parser->word()."\n";
+	echo "$parser->nl sex=".$parser->byte()."\n";
+}
+
+// packet 0x998
+function PACKET_CZ_REQ_WEAR_EQUIP_V5($parser) {
+	echo "$parser->packet_desc index=".$parser->word()."\n";
+	echo "$parser->nl wearLocation=".$parser->long()."\n";
+}
+
+// packet 0x999
+function PACKET_ZC_ACK_WEAR_EQUIP_V5($parser) {
+	echo "$parser->packet_desc index=".$parser->word()."\n";
+	echo "$parser->nl wearLocation=".$parser->long()."\n";
+	echo "$parser->nl wItemSpriteNumber=".$parser->word()."\n";
+	echo "$parser->nl result=".$parser->byte()."\n";
+}
+
+// packet 0x99a
+function PACKET_ZC_ACK_TAKEOFF_EQUIP_V5($parser) {
+	echo "$parser->packet_desc index=".$parser->word()."\n";
+	echo "$parser->nl wearLocation=".$parser->long()."\n";
+	echo "$parser->nl result=".$parser->byte()."\n";
+}
+
+// packet 0x99b
+function PACKET_ZC_MAPPROPERTY_R2($parser) {
+	echo "$parser->packet_desc type=".$parser->word()."\n";
+	echo "$parser->nl NotifyPropertyBits=".$parser->long()."\n";
+}
+
+// packet 0x99c
+function PACKET_CH_REQ_CHARINFO_PER_PAGE($parser) {
+	echo "$parser->packet_desc SeqNum=".$parser->long()."\n";
+}
+
+// packet 0x99d
+function PACKET_HC_ACK_CHARINFO_PER_PAGE($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	$charInfo = ($parser->packet_length - $parser->packet_pointer) / 144;
+	for ($i = 0; $i < $charInfo; $i++) {
+		echo "$parser->nl GID=".$parser->long()."\n";
+		echo "$parser->nl exp=".$parser->long()."\n";
+		echo "$parser->nl money=".$parser->long()."\n";
+		echo "$parser->nl jobexp=".$parser->long()."\n";
+		echo "$parser->nl joblevel=".$parser->long()."\n";
+		echo "$parser->nl bodystate=".$parser->long()."\n";
+		echo "$parser->nl healthstate=".$parser->long()."\n";
+		echo "$parser->nl effectstate=".$parser->long()."\n";
+		echo "$parser->nl virtue=".$parser->long()."\n";
+		echo "$parser->nl honor=".$parser->long()."\n";
+		echo "$parser->nl jobpoint=".$parser->word()."\n";
+		echo "$parser->nl hp=".$parser->long()."\n";
+		echo "$parser->nl maxhp=".$parser->long()."\n";
+		echo "$parser->nl sp=".$parser->word()."\n";
+		echo "$parser->nl maxsp=".$parser->word()."\n";
+		echo "$parser->nl speed=".$parser->word()."\n";
+		echo "$parser->nl job=".$parser->word()."\n";
+		echo "$parser->nl head=".$parser->word()."\n";
+		echo "$parser->nl weapon=".$parser->word()."\n";
+		echo "$parser->nl level=".$parser->word()."\n";
+		echo "$parser->nl sppoint=".$parser->word()."\n";
+		echo "$parser->nl accessory=".$parser->word()."\n";
+		echo "$parser->nl shield=".$parser->word()."\n";
+		echo "$parser->nl accessory2=".$parser->word()."\n";
+		echo "$parser->nl accessory3=".$parser->word()."\n";
+		echo "$parser->nl headpalette=".$parser->word()."\n";
+		echo "$parser->nl bodypalette=".$parser->word()."\n";
+		echo "$parser->nl name=".$parser->string(24)."\n";
+		echo "$parser->nl Str=".$parser->byte()."\n";
+		echo "$parser->nl Agi=".$parser->byte()."\n";
+		echo "$parser->nl Vit=".$parser->byte()."\n";
+		echo "$parser->nl Int=".$parser->byte()."\n";
+		echo "$parser->nl Dex=".$parser->byte()."\n";
+		echo "$parser->nl Luk=".$parser->byte()."\n";
+		echo "$parser->nl CharNum=".$parser->byte()."\n";
+		echo "$parser->nl haircolor=".$parser->byte()."\n";
+		echo "$parser->nl bIsChangedCharName=".$parser->word()."\n";
+		echo "$parser->nl lastMap=".$parser->string(16)."\n";
+		echo "$parser->nl DeleteDate=".$parser->long()."\n";
+		echo "$parser->nl Robe=".$parser->long()."\n";
+		echo "$parser->nl SlotAddon=".$parser->long()."\n";
+		echo "$parser->nl RenameAddon=".$parser->long()."\n";
+	}
+}
+
+// packet 0x99e
+function PACKET_HC_QUEUE_ORDER($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	echo "$parser->nl m_AID=".$parser->long()."\n";
+	echo "$parser->nl m_QueueOrder=".$parser->long()."\n";
+}
+
+// packet 0x99f
+function PACKET_ZC_SKILL_ENTRY4($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	echo "$parser->nl AID=".$parser->long()."\n";
+	echo "$parser->nl creatorAID=".$parser->long()."\n";
+	echo "$parser->nl xPos=".$parser->word()."\n";
+	echo "$parser->nl yPos=".$parser->word()."\n";
+	echo "$parser->nl job=".$parser->long()."\n";
+	echo "$parser->nl RadiusRange=".$parser->byte()."\n";
+	echo "$parser->nl isVisible=".$parser->byte()."\n";
+}
+
+// packet 0x9a0
+function PACKET_HC_CHARLIST_NOTIFY($parser) {
+	echo "$parser->packet_desc TotalCnt=".$parser->long()."\n";
+}
+
+// packet 0x9a1
+function PACKET_CH_CHARLIST_REQ($parser) {
+	echo "$parser->packet_desc \n";
+}
+
+// packet 0x9a2
+function PACKET_AC_REQ_MOBILE_OTP($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+}
+
+// packet 0x9a4
+function PACKET_ZC_DISPATCH_TIMING_INFO_CHN($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl Balance=".$parser->long()."\n";
+	echo "$parser->nl Effective_dTime=".$parser->long()."\n";
+	echo "$parser->nl Reason=".$parser->long()."\n";
+}
+
+// packet 0x9a5
+function PACKET_AC_REFUSE_LOGIN3($parser) {
+	echo "$parser->packet_desc ErrorCode=".$parser->byte()."\n";
+	echo "$parser->nl BlockedReaminSEC=".$parser->long()."\n";
+}
+
+// packet 0x9a6
+function PACKET_ZC_BANKING_CHECK($parser) {
+	echo "$parser->packet_desc Money=".$parser->int64()."\n";
+	echo "$parser->nl Reason=".$parser->word()."\n";
+}
+
+// packet 0x9a7
+function PACKET_CZ_REQ_BANKING_DEPOSIT($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl Money=".$parser->long()."\n";
+}
+
+// packet 0x9a8
+function PACKET_ZC_ACK_BANKING_DEPOSIT($parser) {
+	echo "$parser->packet_desc Reason=".$parser->word()."\n";
+	echo "$parser->nl Money=".$parser->int64()."\n";
+}
+
+// packet 0x9a9
+function PACKET_CZ_REQ_BANKING_WITHDRAW($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl Money=".$parser->long()."\n";
+}
+
+// packet 0x9aa
+function PACKET_ZC_ACK_BANKING_WITHDRAW($parser) {
+	echo "$parser->packet_desc Reason=".$parser->word()."\n";
+	echo "$parser->nl Money=".$parser->int64()."\n";
+}
+
+// packet 0x9ab
+function PACKET_CZ_REQ_BANKING_CHECK($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+}
+
+// packet 0x9ac
+function PACKET_CZ_REQ_CASH_BARGAIN_SALE_ITEM_INFO($parser) {
+	echo "$parser->packet_desc PacketLength=".$parser->word()."\n";
+	echo "$parser->nl AID=".$parser->long()."\n";
+}
+
+// packet 0x9ad
+function PACKET_ZC_ACK_CASH_BARGAIN_SALE_ITEM_INFO($parser) {
+	echo "$parser->packet_desc Result=".$parser->word()."\n";
+	echo "$parser->nl ItemID=".$parser->word()."\n";
+	echo "$parser->nl Price=".$parser->long()."\n";
+}
+
+// packet 0x9ae
+function PACKET_CZ_REQ_APPLY_BARGAIN_SALE_ITEM($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl ItemID=".$parser->word()."\n";
+	echo "$parser->nl Count=".$parser->long()."\n";
+	echo "$parser->nl StartDate=".$parser->long()."\n";
+	echo "$parser->nl SellingTime=".$parser->byte()."\n";
+}
+
+// packet 0x9af
+function PACKET_ZC_ACK_APPLY_BARGAIN_SALE_ITEM($parser) {
+	echo "$parser->packet_desc Result=".$parser->word()."\n";
+}
+
+// packet 0x9b0
+function PACKET_CZ_REQ_REMOVE_BARGAIN_SALE_ITEM($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+	echo "$parser->nl ItemID=".$parser->word()."\n";
+}
+
+// packet 0x9b1
+function PACKET_ZC_ACK_REMOVE_BARGAIN_SALE_ITEM($parser) {
+	echo "$parser->packet_desc Result=".$parser->word()."\n";
+}
+
+// packet 0x9b2
+function PACKET_ZC_NOTIFY_BARGAIN_SALE_SELLING($parser) {
+	echo "$parser->packet_desc ItemID=".$parser->word()."\n";
+	echo "$parser->nl TabCode=".$parser->word()."\n";
+}
+
+// packet 0x9b3
+function PACKET_ZC_NOTIFY_BARGAIN_SALE_CLOSE($parser) {
+	echo "$parser->packet_desc ItemID=".$parser->word()."\n";
+	echo "$parser->nl TabCode=".$parser->word()."\n";
+}
+
+// packet 0x9b4
+function PACKET_CZ_OPEN_BARGAIN_SALE_TOOL($parser) {
+	echo "$parser->packet_desc AID=".$parser->long()."\n";
+}
+
+// packet 0x9b5
+function PACKET_ZC_OPEN_BARGAIN_SALE_TOOL($parser) {
+	echo "$parser->packet_desc \n";
+}
+
 ?>

@@ -48,7 +48,7 @@ while (!feof($intxt)) {
         continue;
     }
     // types in main struct
-    if (preg_match('%^\s\s/\* this\+(\wx\w*) \*/ (unsigned short|short|unsigned char|char|bool|unsigned long|long|unsigned int|int) (\w*)(?:\[(\d*|\.*)\])*%', $line, $m)) {
+    if (preg_match('%^\s\s/\* this\+(\wx\w*) \*/ (unsigned short|short|unsigned char|char|bool|unsigned long|long|unsigned int|int|int64|float) (\w*)(?:\[(\d*|\.*)\])*%', $line, $m)) {
         $m[3] = trim($m[3]);
 		if($m[3] == "PacketType")
 			continue;
@@ -68,6 +68,14 @@ while (!feof($intxt)) {
             case 'unsigned int':
 				$string = $prepend."$m[3]=\".\$parser->long().\"\\n\";\n";
                 break;
+			
+			case 'int64':
+				$string = $prepend."$m[3]=\".\$parser->int64().\"\\n\";\n";
+				break;
+			case 'float':
+				$string = $prepend."$m[3]=\".\$parser->long().\"\\n\";\n";
+				break;
+			
             case 'unsigned char':
             case 'char':
             case 'bool':
@@ -118,7 +126,7 @@ while (!feof($intxt)) {
         continue;
     }
     // second level stuct type
-    if (preg_match('%^\s\s\s\s/\* this\+(\wx\w*) \*/ (unsigned short|short|unsigned char|char|bool|unsigned long|long|unsigned int|int) (\w*)(?:\[(\d*|\.*)\])*%', $line, $m)) {
+    if (preg_match('%^\s\s\s\s/\* this\+(\wx\w*) \*/ (unsigned short|short|unsigned char|char|bool|unsigned long|long|unsigned int|int|int64|float) (\w*)(?:\[(\d*|\.*)\])*%', $line, $m)) {
         $m[3] = trim($m[3]);
         switch($m[2]) {
             case 'unsigned short':
@@ -131,6 +139,12 @@ while (!feof($intxt)) {
             case 'unsigned int':
                 $string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->long().\"\\n\";\n";
                 break;
+			case 'int64':
+				$string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->int64().\"\\n\";\n";
+				break;
+			case 'float':
+				$string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->long().\"\\n\";\n";
+				break;
             case 'unsigned char':
             case 'char':
             case 'bool':
@@ -166,7 +180,7 @@ while (!feof($intxt)) {
         continue;
     }
     // 3rd level stuct type
-    if (preg_match('%^\s\s\s\s\s\s/\* this\+(\wx\w*) \*/ (unsigned short|short|unsigned char|char|bool|unsigned long|long|unsigned int|int) (\w*)(?:\[(\d*|\.*)\])*%', $line, $m)) {
+    if (preg_match('%^\s\s\s\s\s\s/\* this\+(\wx\w*) \*/ (unsigned short|short|unsigned char|char|bool|unsigned long|long|unsigned int|int|int64|float) (\w*)(?:\[(\d*|\.*)\])*%', $line, $m)) {
         $m[3] = trim($m[3]);
         switch($m[2]) {
             case 'unsigned short':
@@ -179,6 +193,12 @@ while (!feof($intxt)) {
             case 'unsigned int':
                 $string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->long().\"\\n\";\n";
                 break;
+			case 'int64':
+				$string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->int64().\"\\n\";\n";
+				break;
+			case 'float':
+				$string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->long().\"\\n\";\n";
+				break;
             case 'unsigned char':
             case 'char':
             case 'bool':

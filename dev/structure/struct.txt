@@ -8018,9 +8018,9 @@ struct PACKET_ZC_PREMIUM_CAMPAIGN_INFO {
   /* this+0x6 */ unsigned long PremiumValue
   /* this+0xa */ struct PREMIUM_CAMPAIGN_INFO CampainInfo[...] { // Size 14
     /* this+0x0 */ short Grade
-    /* this+0x2 */ long Exp
-    /* this+0x6 */ long Death
-    /* this+0xa */ long Drp
+    /* this+0x2 */ float Exp
+    /* this+0x6 */ float Death
+    /* this+0xa */ float Drp
   }
 }
 
@@ -8401,4 +8401,428 @@ struct PACKET_ZC_NOTIFY_CLAN_CHAT {
   /* this+0x2 */ short PacketLength
   /* this+0x4 */ char charName[24]
   /* this+0x1c */ char chat[...];
+}
+
+// packet 0x990
+struct PACKET_ZC_ITEM_PICKUP_ACK_V5 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short Index
+  /* this+0x4 */ unsigned short count
+  /* this+0x6 */ unsigned short ITID
+  /* this+0x8 */ bool IsIdentified
+  /* this+0x9 */ bool IsDamaged
+  /* this+0xa */ unsigned char refiningLevel
+  /* this+0xb */ struct EQUIPSLOTINFO slot {
+    /* this+0x0 */ unsigned short card1
+    /* this+0x2 */ unsigned short card2
+    /* this+0x4 */ unsigned short card3
+    /* this+0x6 */ unsigned short card4
+  }
+  /* this+0x13 */ unsigned long location
+  /* this+0x17 */ unsigned char type
+  /* this+0x18 */ unsigned char result
+  /* this+0x19 */ long HireExpireDate
+  /* this+0x1d */ unsigned short bindOnEquipType
+}
+
+// packet 0x991
+struct PACKET_ZC_INVENTORY_ITEMLIST_NORMAL_V5 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ struct ITEMLIST_NORMAL_ITEM Items[...] { // Size 24
+    /* this+0x0 */ short index
+    /* this+0x2 */ unsigned short ITID
+    /* this+0x4 */ unsigned char type
+    /* this+0x5 */ short count
+    /* this+0x7 */ long WearState
+    /* this+0xb */ struct EQUIPSLOTINFO slot {
+      /* this+0x0 */ unsigned short card1
+      /* this+0x2 */ unsigned short card2
+      /* this+0x4 */ unsigned short card3
+      /* this+0x6 */ unsigned short card4
+    }
+    /* this+0x13 */ long HireExpireDate
+    /* this+0x17 */ char Flag
+  }
+}
+
+// packet 0x992
+struct PACKET_ZC_INVENTORY_ITEMLIST_EQUIP_V5 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ struct ITEMLIST_EQUIP_ITEM Items[...] { // Size 27
+    /* this+0x0 */ short index
+    /* this+0x2 */ unsigned short ITID
+    /* this+0x4 */ unsigned char type
+    /* this+0x5 */ unsigned long location
+    /* this+0x9 */ unsigned long WearState
+    /* this+0xd */ unsigned char RefiningLevel
+    /* this+0xe */ struct EQUIPSLOTINFO slot {
+      /* this+0x0 */ unsigned short card1
+      /* this+0x2 */ unsigned short card2
+      /* this+0x4 */ unsigned short card3
+      /* this+0x6 */ unsigned short card4
+    }
+    /* this+0x16 */ long HireExpireDate
+    /* this+0x1a */ unsigned short bindOnEquipType
+    /* this+0x1c */ unsigned short wItemSpriteNumber
+    /* this+0x1e */ bool Flag
+  }
+}
+
+// packet 0x993
+struct PACKET_ZC_CART_ITEMLIST_NORMAL_V5 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ struct ITEMLIST_NORMAL_ITEM Items[...] { // Size 24
+    /* this+0x0 */ short index
+    /* this+0x2 */ unsigned short ITID
+    /* this+0x4 */ unsigned char type
+    /* this+0x5 */ short count
+    /* this+0x7 */ long WearState
+    /* this+0xb */ struct EQUIPSLOTINFO slot {
+      /* this+0x0 */ unsigned short card1
+      /* this+0x2 */ unsigned short card2
+      /* this+0x4 */ unsigned short card3
+      /* this+0x6 */ unsigned short card4
+    }
+    /* this+0x13 */ long HireExpireDate
+    /* this+0x17 */ char Flag
+  }
+}
+
+// packet 0x994
+struct PACKET_ZC_CART_ITEMLIST_EQUIP_V5 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ struct ITEMLIST_EQUIP_ITEM Items[...] { // Size 27
+    /* this+0x0 */ short index
+    /* this+0x2 */ unsigned short ITID
+    /* this+0x4 */ unsigned char type
+    /* this+0x5 */ unsigned long location
+    /* this+0x9 */ unsigned long WearState
+    /* this+0xd */ unsigned char RefiningLevel
+    /* this+0xe */ struct EQUIPSLOTINFO slot {
+      /* this+0x0 */ unsigned short card1
+      /* this+0x2 */ unsigned short card2
+      /* this+0x4 */ unsigned short card3
+      /* this+0x6 */ unsigned short card4
+    }
+    /* this+0x16 */ long HireExpireDate
+    /* this+0x1a */ unsigned short bindOnEquipType
+    /* this+0x1c */ unsigned short wItemSpriteNumber
+    /* this+0x1e */ bool Flag
+  }
+}
+
+// packet 0x995
+struct PACKET_ZC_STORE_ITEMLIST_NORMAL_V5 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ struct ITEMLIST_NORMAL_ITEM Items[...] { // Size 24
+    /* this+0x0 */ short index
+    /* this+0x2 */ unsigned short ITID
+    /* this+0x4 */ unsigned char type
+    /* this+0x5 */ short count
+    /* this+0x7 */ long WearState
+    /* this+0xb */ struct EQUIPSLOTINFO slot {
+      /* this+0x0 */ unsigned short card1
+      /* this+0x2 */ unsigned short card2
+      /* this+0x4 */ unsigned short card3
+      /* this+0x6 */ unsigned short card4
+    }
+    /* this+0x13 */ long HireExpireDate
+    /* this+0x17 */ char Flag
+  }
+}
+
+// packet 0x996
+struct PACKET_ZC_STORE_ITEMLIST_EQUIP_V5 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ struct ITEMLIST_EQUIP_ITEM Items[...] { // Size 27
+    /* this+0x0 */ short index
+    /* this+0x2 */ unsigned short ITID
+    /* this+0x4 */ unsigned char type
+    /* this+0x5 */ unsigned long location
+    /* this+0x9 */ unsigned long WearState
+    /* this+0xd */ unsigned char RefiningLevel
+    /* this+0xe */ struct EQUIPSLOTINFO slot {
+      /* this+0x0 */ unsigned short card1
+      /* this+0x2 */ unsigned short card2
+      /* this+0x4 */ unsigned short card3
+      /* this+0x6 */ unsigned short card4
+    }
+    /* this+0x16 */ long HireExpireDate
+    /* this+0x1a */ unsigned short bindOnEquipType
+    /* this+0x1c */ unsigned short wItemSpriteNumber
+    /* this+0x1e */ bool Flag
+  }
+}
+
+// packet 0x997
+struct PACKET_ZC_EQUIPWIN_MICROSCOPE_V5 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short Length
+  /* this+0x4 */ char characterName[24]
+  /* this+0x1c */ short job
+  /* this+0x1e */ short head
+  /* this+0x20 */ short accessory
+  /* this+0x22 */ short accessory2
+  /* this+0x24 */ short accessory3
+  /* this+0x26 */ short robe
+  /* this+0x28 */ short headpalette
+  /* this+0x2a */ short bodypalette
+  /* this+0x2c */ unsigned char sex
+}
+
+// packet 0x998
+struct PACKET_CZ_REQ_WEAR_EQUIP_V5 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short index
+  /* this+0x4 */ unsigned long wearLocation
+}
+
+// packet 0x999
+struct PACKET_ZC_ACK_WEAR_EQUIP_V5 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short index
+  /* this+0x4 */ unsigned long wearLocation
+  /* this+0x8 */ unsigned short wItemSpriteNumber
+  /* this+0xa */ unsigned char result
+}
+
+// packet 0x99a
+struct PACKET_ZC_ACK_TAKEOFF_EQUIP_V5 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short index
+  /* this+0x4 */ unsigned long wearLocation
+  /* this+0x8 */ unsigned char result
+}
+
+// packet 0x99b
+struct PACKET_ZC_MAPPROPERTY_R2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short type
+  /* this+0x4 */ long NotifyPropertyBits
+}
+
+// packet 0x99c
+struct PACKET_CH_REQ_CHARINFO_PER_PAGE {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long SeqNum
+}
+
+// packet 0x99d
+struct PACKET_HC_ACK_CHARINFO_PER_PAGE {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ struct CHARACTER_INFO_NEO_UNION charInfo[...] { // Size 144
+    /* this+0x0 */ unsigned long GID
+    /* this+0x4 */ int exp
+    /* this+0x8 */ int money
+    /* this+0xc */ int jobexp
+    /* this+0x10 */ int joblevel
+    /* this+0x14 */ int bodystate
+    /* this+0x18 */ int healthstate
+    /* this+0x1c */ int effectstate
+    /* this+0x20 */ int virtue
+    /* this+0x24 */ int honor
+    /* this+0x28 */ short jobpoint
+    /* this+0x2a */ int hp
+    /* this+0x2e */ int maxhp
+    /* this+0x32 */ short sp
+    /* this+0x34 */ short maxsp
+    /* this+0x36 */ short speed
+    /* this+0x38 */ short job
+    /* this+0x3a */ short head
+    /* this+0x3c */ short weapon
+    /* this+0x3e */ short level
+    /* this+0x40 */ short sppoint
+    /* this+0x42 */ short accessory
+    /* this+0x44 */ short shield
+    /* this+0x46 */ short accessory2
+    /* this+0x48 */ short accessory3
+    /* this+0x4a */ short headpalette
+    /* this+0x4c */ short bodypalette
+    /* this+0x4e */ unsigned char name[24]
+    /* this+0x66 */ unsigned char Str
+    /* this+0x67 */ unsigned char Agi
+    /* this+0x68 */ unsigned char Vit
+    /* this+0x69 */ unsigned char Int
+    /* this+0x6a */ unsigned char Dex
+    /* this+0x6b */ unsigned char Luk
+    /* this+0x6c */ unsigned char CharNum
+    /* this+0x6d */ unsigned char haircolor
+    /* this+0x6e */ short bIsChangedCharName
+    /* this+0x70 */ unsigned char lastMap[16]
+    /* this+0x80 */ int DeleteDate
+    /* this+0x84 */ int Robe
+    /* this+0x88 */ int SlotAddon
+    /* this+0x8c */ int RenameAddon
+  }
+}
+
+// packet 0x99e
+struct PACKET_HC_QUEUE_ORDER {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short PacketLength
+  /* this+0x4 */ unsigned long m_AID
+  /* this+0x8 */ unsigned long m_QueueOrder
+}
+
+// packet 0x99f
+struct PACKET_ZC_SKILL_ENTRY4 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ unsigned long AID
+  /* this+0x8 */ unsigned long creatorAID
+  /* this+0xc */ short xPos
+  /* this+0xe */ short yPos
+  /* this+0x10 */ int job
+  /* this+0x14 */ char RadiusRange
+  /* this+0x15 */ bool isVisible
+}
+
+// packet 0x9a0
+struct PACKET_HC_CHARLIST_NOTIFY {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ int TotalCnt
+}
+
+// packet 0x9a1
+struct PACKET_CH_CHARLIST_REQ {
+  /* this+0x0 */ short PacketType
+}
+
+// packet 0x9a2
+struct PACKET_AC_REQ_MOBILE_OTP {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+}
+
+// packet 0x9a4
+struct PACKET_ZC_DISPATCH_TIMING_INFO_CHN {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ unsigned long Balance
+  /* this+0xa */ unsigned long Effective_dTime
+  /* this+0xe */ int Reason
+}
+
+// packet 0x9a5
+struct PACKET_AC_REFUSE_LOGIN3 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned char ErrorCode
+  /* this+0x3 */ long BlockedReaminSEC
+}
+
+// packet 0x9a6
+struct PACKET_ZC_BANKING_CHECK {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ int64 Money
+  /* this+0xa */ short Reason
+}
+
+// packet 0x9a7
+struct PACKET_CZ_REQ_BANKING_DEPOSIT {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ int Money
+}
+
+// packet 0x9a8
+struct PACKET_ZC_ACK_BANKING_DEPOSIT {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short Reason
+  /* this+0x4 */ int64 Money
+}
+
+// packet 0x9a9
+struct PACKET_CZ_REQ_BANKING_WITHDRAW {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ int Money
+}
+
+// packet 0x9aa
+struct PACKET_ZC_ACK_BANKING_WITHDRAW {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short Reason
+  /* this+0x4 */ int64 Money
+}
+
+// packet 0x9ab
+struct PACKET_CZ_REQ_BANKING_CHECK {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+}
+
+// packet 0x9ac
+struct PACKET_CZ_REQ_CASH_BARGAIN_SALE_ITEM_INFO {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ unsigned long AID
+}
+
+// packet 0x9ad
+struct PACKET_ZC_ACK_CASH_BARGAIN_SALE_ITEM_INFO {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short Result
+  /* this+0x4 */ unsigned short ItemID
+  /* this+0x6 */ int Price
+}
+
+// packet 0x9ae
+struct PACKET_CZ_REQ_APPLY_BARGAIN_SALE_ITEM {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ unsigned short ItemID
+  /* this+0x8 */ int Count
+  /* this+0xc */ int StartDate
+  /* this+0x10 */ unsigned char SellingTime
+}
+
+// packet 0x9af
+struct PACKET_ZC_ACK_APPLY_BARGAIN_SALE_ITEM {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short Result
+}
+
+// packet 0x9b0
+struct PACKET_CZ_REQ_REMOVE_BARGAIN_SALE_ITEM {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+  /* this+0x6 */ unsigned short ItemID
+}
+
+// packet 0x9b1
+struct PACKET_ZC_ACK_REMOVE_BARGAIN_SALE_ITEM {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short Result
+}
+
+// packet 0x9b2
+struct PACKET_ZC_NOTIFY_BARGAIN_SALE_SELLING {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short ItemID
+  /* this+0x4 */ short TabCode
+}
+
+// packet 0x9b3
+struct PACKET_ZC_NOTIFY_BARGAIN_SALE_CLOSE {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned short ItemID
+  /* this+0x4 */ short TabCode
+}
+
+// packet 0x9b4
+struct PACKET_CZ_OPEN_BARGAIN_SALE_TOOL {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ unsigned long AID
+}
+
+// packet 0x9b5
+struct PACKET_ZC_OPEN_BARGAIN_SALE_TOOL {
+  /* this+0x0 */ short PacketType
 }
