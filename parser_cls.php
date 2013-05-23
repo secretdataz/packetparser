@@ -116,7 +116,8 @@ class parser {
 			$txtfile = fopen($length, 'r') or exit("Unable to open $length");
 			
 			while (!feof($txtfile)) {
-				if(preg_match('/(.*),(.*)/', fgets($txtfile), $regs)) {
+				$line = fgets($txtfile);
+				if(preg_match('/(.*),(.*)/', $line, $regs)) {
 					$this->p_lens[$regs[1]] = trim($regs[2]);
 					if($shuffle_id && $shuffle_id < 30){
 						$this->p_funcs[$regs[1]] = trim($shuffle[$shuffle_id]);
@@ -125,7 +126,7 @@ class parser {
 					}
 				}
 				
-				if(preg_match('/## New Table ##/', fgets($txtfile), $regs)) {
+				if(preg_match('/## New Table ##/', $line, $regs)) {
 					$shuffle_id = 1;
 				}
 			}
@@ -356,7 +357,7 @@ class parser {
 			// ####
 			if(array_key_exists($this->packet_id, $this->p_lens)) {
 				$this->packet_length = $this->p_lens[$this->packet_id];
-				if(!$this->packet_length || $this->packet_length == "-1") {
+				if($this->packet_length == "0" || $this->packet_length == "-1") {
 					// Get packet length from packet
 					$this->packet_length = $this->unpack2("@2/S", $this->stream);
 				}
