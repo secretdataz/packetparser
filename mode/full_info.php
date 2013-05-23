@@ -1,4 +1,78 @@
 <?php
+// packet_parser functions
+function PP_MODE_INIT($parser) {
+	$parser->mode["mode_name"] = "full_info";	//
+	$parser->mode["extra_bytes"] = true;		// warning about extra packet data
+	$parser->mode["debug"] = true;				// write packets to file
+	$parser->mode["save_output"] = true;		// write console output to log file
+	$parser->mode["time_output"] = false;		// echo time after every packet
+	$parser->mode["time_started"] = false;		// 
+	
+	$parser->nl = "|     |     |      |                                                    |";
+	$parser->br = "|.....|.....|......|....................................................|...............................\n";
+	
+	if($parser->mode["debug"]) {
+		$debugfilename = "debug/".date("Ymd-Gis").".txt";
+		$parser->debug = fopen($debugfilename, "w+");
+	}
+	if($parser->mode["save_output"]) {
+		$log_filename = "output_log/".date("Ymd-Gis").".txt";
+		$parser->log_file = fopen($log_filename, "w+");
+	}
+	if($parser->mode["time_output"]){
+		$parser->mode["start_time"] = microtime(true);
+	}
+}
+
+function echo_save($parser, $text){
+	echo $text;
+	fwrite($parser->log_file, $text);
+}
+
+function PP_FUNC_NOT_DEFINED($parser) {
+	echo_save($parser, $parser->packet_desc . "\n");
+}
+
+function PP_AEGIS_GID($parser) {
+	if(!$parser->packet_dir)
+		$parser->packet_dir = " ";
+	echo_save($parser, "| $parser->packet_num |  $parser->packet_dir  |     | Account_ID\n");
+}
+
+function PP_PLEN_ERROR($parser) {
+	$remainder = strlen($parser->stream);
+	echo_save($parser, "| $parser->packet_num |     | $parser->packet_id | Packet_ID Not Found                                | Skipping $remainder Bytes \n");
+	echo_save($parser, $parser->br);
+}
+
+function PP_PACKET_SPLIT($parser) {
+	if(!$parser->packet_dir)
+		$parser->packet_dir = " ";
+	echo_save($parser, "| $parser->packet_num |  $parser->packet_dir  | $parser->packet_id | Packet Not Complete                                |\n");
+}
+
+function PP_LINE_BREAK($parser) {
+	echo_save($parser, $parser->br);
+}
+
+function PP_TIME_OUTPUT($parser) {
+	if(!$parser->mode["time_started"]) {
+		$parser->mode["time_started"] = true;
+		$parser->mode["start_time"] = microtime(true);
+	}
+	$packet_time = microtime(true) - $parser->mode["start_time"];
+	list($usec, $sec) = explode(" ", microtime());
+	echo_save($parser, "| The next packet at ".$packet_time."  -   ".$sec."  \n");
+	echo_save($parser, $parser->br);
+}
+
+function PP_ENTRY_TEXT($parser) {
+	echo_save($parser, "T-----T-----T------T----------------------------------------------------T----------------------------------------------T\n");
+	echo_save($parser, "| Num | Way |  ID  | Packet description                                 | Extra information                             \n");
+	echo_save($parser, "I-----I-----I------I----------------------------------------------------I----------------------------------------------I\n");
+}
+
+
 // packet 0x64
 function PACKET_CA_LOGIN($parser) {
 	echo "$parser->packet_desc Version=".$parser->long()."\n";
