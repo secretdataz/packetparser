@@ -11,17 +11,16 @@ class parser {
 	public $mode	= array();		// mode settings
 	
 	// Static Data
-	public $unit    = array();      // array to store seen units for later use
-	public $job     = array();      // jobs , mobs , mercs,  npc ids
-	public $item    = array();      // items
-	public $vars    = array();      // vars
-	public $skill   = array();      // skills
-	public $efst    = array();      // status
+	public $unit		= array();      // array to store seen units for later use
+	public $job			= array();      // jobs , mobs , mercs,  npc ids
+	public $item		= array();      // items
+	public $vars		= array();      // vars
+	public $skill		= array();      // skills
+	public $efst		= array();      // status
 	
 	// Packet Info
-	public $p_lens  = array();      // packet length array
-	public $p_funcs = array();      // packet analyzer functions
-	
+	public $p_lens		= array();      // packet length array
+	public $p_funcs		= array();      // packet analyzer functions
 	
 	// 
 	public $aid = null;
@@ -31,8 +30,8 @@ class parser {
 
 	function __construct() {
 		// Load Packet Info
-		$this->load_plen();
 		$this->load_data("./data/packet/func.txt",		"p_funcs");
+		$this->load_plen();
 		// Load Static Data
 		$this->load_data("./data/enum/jobtype.txt",	"job");
 		$this->load_data("./data/enum/item.txt",		"item");
@@ -53,21 +52,87 @@ class parser {
 			echo "$this->nl $extra_bytes bytes not analyzed\n";
 		}
 	}
+	function load_data($filename, $arr) {
+		$starttime = microtime(true);
+		//$filename = "$filename";
+		$txtfile = fopen($filename, 'r') or exit("Unable to open $filename");
+		while (!feof($txtfile)) {
+			if(preg_match('/(.*),(.*)/', fgets($txtfile), $regs)) {
+				$this->{$arr}[$regs[1]] = trim($regs[2]);
+			}
+		}
+		fclose($txtfile);
+		$totaltime = microtime(true) - $starttime;
+		echo str_pad("load_data($filename)", 34, " ")." Time: " . round($totaltime, 3) . "s\n";
+	}
 	
 	function load_plen() {
+		$shuffle = array();
+		$shuffle[0] = "PACKET_SHUFFLES_SUCK_BALLS";
+		$shuffle[1] = "PACKET_CZ_REQUEST_ACT2";
+		$shuffle[2] = "PACKET_CZ_USE_SKILL2";
+		$shuffle[3] = "PACKET_CZ_REQUEST_MOVE2";
+		$shuffle[4] = "PACKET_CZ_REQUEST_TIME2";
+		$shuffle[5] = "PACKET_CZ_CHANGE_DIRECTION2";
+		$shuffle[6] = "PACKET_CZ_ITEM_PICKUP2";
+		$shuffle[7] = "PACKET_CZ_ITEM_THROW2";
+		$shuffle[8] = "PACKET_CZ_MOVE_ITEM_FROM_BODY_TO_STORE2";
+		$shuffle[9] = "PACKET_CZ_MOVE_ITEM_FROM_STORE_TO_BODY2";
+		$shuffle[10] = "PACKET_CZ_USE_SKILL_TOGROUND2";
+		$shuffle[11] = "PACKET_CZ_USE_SKILL_TOGROUND_WITHTALKBOX2";
+		$shuffle[12] = "PACKET_CZ_REQNAME2";
+		$shuffle[13] = "PACKET_CZ_REQNAME_BYGID2";
+		$shuffle[14] = "PACKET_CZ_SSILIST_ITEM_CLICK";
+		$shuffle[15] = "PACKET_CZ_SEARCH_STORE_INFO_NEXT_PAGE";
+		$shuffle[16] = "PACKET_CZ_SEARCH_STORE_INFO";
+		$shuffle[17] = "PACKET_CZ_REQ_TRADE_BUYING_STORE";
+		$shuffle[18] = "PACKET_CZ_REQ_CLICK_TO_BUYING_STORE";
+		$shuffle[19] = "PACKET_CZ_REQ_CLOSE_BUYING_STORE";
+		$shuffle[20] = "PACKET_CZ_REQ_OPEN_BUYING_STORE";
+		$shuffle[21] = "PACKET_CZ_PARTY_BOOKING_REQ_REGISTER";
+		$shuffle[22] = "PACKET_CZ_JOIN_BATTLE_FIELD";
+		$shuffle[23] = "PACKET_CZ_ITEMLISTWIN_RES";
+		$shuffle[24] = "PACKET_CZ_ENTER2";
+		$shuffle[25] = "PACKET_CZ_PARTY_JOIN_REQ";
+		$shuffle[26] = "PACKET_CZ_GANGSI_RANK";
+		$shuffle[27] = "PACKET_CZ_ADD_FRIENDS";
+		$shuffle[28] = "PACKET_CZ_COMMAND_MER";
+		$shuffle[29] = "PACKET_CZ_ACK_STORE_PASSWORD";
+	
 		echo "\nPacket Length Tables -\n";
-		$modes = glob("./data/packet/{plen*.txt,recvpackets*.txt}", GLOB_BRACE);
-		if (sizeof($modes) == 0) {
+		$lengths = glob("./data/packet/{plen*.txt,recvpackets*.txt}", GLOB_BRACE);
+		if (sizeof($lengths) == 0) {
 			die("Place packet lengths inside the data/packet folder\n");
 		}
-		foreach ($modes as $i => $mode) {
-			echo " " . $i . ": " . basename($mode,".txt") . "\r\n";
+		foreach ($lengths as $i => $length) {
+			echo " " . $i . ": " . basename($length,".txt") . "\r\n";
 		}
 		fwrite(STDOUT, "\nWhich plen to use? ");
 		$choice = trim(fgets(STDIN));
-		if (isset($modes[$choice])) {
-			$mode = $modes[$choice];
-			$this->load_data($mode,		"p_lens");
+		if (isset($lengths[$choice])) {
+			$length = $lengths[$choice];
+			$shuffle_id = 0;
+			$starttime = microtime(true);
+			$txtfile = fopen($length, 'r') or exit("Unable to open $length");
+			
+			while (!feof($txtfile)) {
+				if(preg_match('/(.*),(.*)/', fgets($txtfile), $regs)) {
+					$this->p_lens[$regs[1]] = trim($regs[2]);
+					if($shuffle_id && $shuffle_id < 30){
+						$this->p_funcs[$regs[1]] = trim($shuffle[$shuffle_id]);
+						echo "Re-Mapped $regs[1] to $shuffle[$shuffle_id]\r\n";
+						$shuffle_id++;
+					}
+				}
+				
+				if(preg_match('/## New Table ##/', fgets($txtfile), $regs)) {
+					$shuffle_id = 1;
+				}
+			}
+			fclose($txtfile);
+			$totaltime = microtime(true) - $starttime;
+			echo str_pad("load_plen($length)", 34, " ")." Time: " . round($totaltime, 3) . "s\n";
+			
 		} else {
 			die("Bad choice\n");
 		}
@@ -224,20 +289,6 @@ class parser {
 		$startbit = $startbyte * 2;
 		return ((((ord($bin{$startbyte}) << $startbit) & 0xFF) >> $startbit) << (2 + $startbit)) | (ord($bin{$startbyte + 1}) >> (6 - $startbit));
 		// mindfuck O_O
-	}
-	
-	function load_data($filename, $arr) {
-		$starttime = microtime(true);
-		//$filename = "$filename";
-		$txtfile = fopen($filename, 'r') or exit("Unable to open $filename");
-		while (!feof($txtfile)) {
-			if(preg_match('/(.*),(.*)/', fgets($txtfile), $regs)) {
-				$this->{$arr}[$regs[1]] = trim($regs[2]);
-			}
-		}
-		fclose($txtfile);
-		$totaltime = microtime(true) - $starttime;
-		echo str_pad("load_data($filename)", 34, " ")." Time: " . round($totaltime, 3) . "s\n";
 	}
 	
 	function unpack2($format, $string) {

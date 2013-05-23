@@ -25,7 +25,7 @@ if($source == "1"){
 	$connected = false;		// socket connected
 	$listening = true;		// socket listening
 	$sock = socket_create(AF_INET,SOCK_STREAM,SOL_TCP);
-	if(!@socket_bind($sock,'127.0.0.1',1234)) {
+	if(!@socket_bind($sock,'127.0.0.1',13554)) {
 		die("\n## Socket already in use ##\n");
 	}
 	socket_listen($sock);
