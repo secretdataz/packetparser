@@ -27,7 +27,7 @@ while (!feof($intxt)) {
         $aegisname = $m[1];
         $string  = "// $packetid\n";
 		$string .= "function $aegisname(\$parser) {\n";
-		$string .= "\techo \"\$parser->packet_desc ";
+		$string .= "\t\$parser->echo_save(\$parser->packet_desc ";
 		$descline .= ",$aegisname\n";
 		fwrite($desc,$descline);
 		$newstruct = true;
@@ -38,7 +38,7 @@ while (!feof($intxt)) {
     if (preg_match('/^\}/', $line, $m)) {
         $packetid = null;
 		if($newstruct){
-			$string = "\\n\";\n";
+			$string = ". \"\\n\");\n";
 			fwrite($outtxt, $string);
 			$newstruct = false;
 		}
@@ -48,42 +48,43 @@ while (!feof($intxt)) {
         continue;
     }
     // types in main struct
+	//$m[1] = hex offset, $m[2] = type, $m[3] = name, $m[4] = length/repeat
     if (preg_match('%^\s\s/\* this\+(\wx\w*) \*/ (unsigned short|short|unsigned char|char|bool|unsigned long|long|unsigned int|int|int64|float) (\w*)(?:\[(\d*|\.*)\])*%', $line, $m)) {
         $m[3] = trim($m[3]);
 		if($m[3] == "PacketType")
 			continue;
 		$prepend = "";
 		if(!$newstruct){
-			$prepend = "\techo \"\$parser->nl ";
+			$prepend = "\t\$parser->echo_save(\$parser->nl ";
 		}
 		$newstruct = false;
         switch($m[2]) {
             case 'unsigned short':
             case 'short':
-				$string = $prepend."$m[3]=\".\$parser->word().\"\\n\";\n";
+				$string = $prepend.". \"$m[3]=\".\$parser->word() . \"\\n\");\n";
                 break;
             case 'unsigned long':
             case 'long':
             case 'int':
             case 'unsigned int':
-				$string = $prepend."$m[3]=\".\$parser->long().\"\\n\";\n";
+				$string = $prepend.". \"$m[3]=\".\$parser->long() . \"\\n\");\n";
                 break;
 			
 			case 'int64':
-				$string = $prepend."$m[3]=\".\$parser->int64().\"\\n\";\n";
+				$string = $prepend.". \"$m[3]=\".\$parser->int64() . \"\\n\");\n";
 				break;
 			case 'float':
-				$string = $prepend."$m[3]=\".\$parser->long().\"\\n\";\n";
+				$string = $prepend.". \"$m[3]=\".\$parser->long() . \"\\n\");\n";
 				break;
 			
             case 'unsigned char':
             case 'char':
             case 'bool':
-                $string = $prepend."$m[3]=\".\$parser->byte().\"\\n\";\n";
+                $string = $prepend.". \"$m[3]=\".\$parser->byte() . \"\\n\");\n";
                 if(@$m[4])
-                    $string = $prepend."$m[3]=\".\$parser->string($m[4]).\"\\n\";\n";
+                    $string = $prepend.". \"$m[3]=\".\$parser->string($m[4]) . \"\\n\");\n";
                 if(@$m[4]=="...")
-                    $string = $prepend."$m[3]=\".\$parser->string(\$parser->packet_length - \$parser->packet_pointer).\"\\n\";\n";
+                    $string = $prepend.". \"$m[3]=\".\$parser->string(\$parser->packet_length - \$parser->packet_pointer) . \"\\n\");\n";
                 break;
         }
         fwrite($outtxt, $string);
@@ -92,7 +93,7 @@ while (!feof($intxt)) {
     // start of 2nd level struct
     if (preg_match('%^\s\s/\* this\+(\wx\w*) \*/ struct (\w*) (\w*)(?:\[(\d*|\.*)\])* \{(?: // Size (\d*))*%', $line, $m)) {
 		if($newstruct){
-			$string = "\";\n";
+			$string = " . \"\\n\");\n";
 			fwrite($outtxt, $string);
 			$newstruct = false;
 		}
@@ -131,26 +132,26 @@ while (!feof($intxt)) {
         switch($m[2]) {
             case 'unsigned short':
             case 'short':
-                $string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->word().\"\\n\";\n";
+                $string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->word() . \"\\n\");\n";
                 break;
             case 'unsigned long':
             case 'long':
             case 'int':
             case 'unsigned int':
-                $string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->long().\"\\n\";\n";
+                $string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->long() . \"\\n\");\n";
                 break;
 			case 'int64':
-				$string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->int64().\"\\n\";\n";
+				$string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->int64() . \"\\n\");\n";
 				break;
 			case 'float':
-				$string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->long().\"\\n\";\n";
+				$string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->long() . \"\\n\");\n";
 				break;
             case 'unsigned char':
             case 'char':
             case 'bool':
-                $string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->byte().\"\\n\";\n";
+                $string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->byte() . \"\\n\");\n";
                 if(@$m[4])
-                    $string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->string($m[4]).\"\\n\";\n";
+                    $string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->string($m[4]) . \"\\n\");\n";
                 break;
         }
         fwrite($outtxt, $string);
@@ -185,26 +186,26 @@ while (!feof($intxt)) {
         switch($m[2]) {
             case 'unsigned short':
             case 'short':
-                $string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->word().\"\\n\";\n";
+                $string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->word() . \"\\n\");\n";
                 break;
             case 'unsigned long':
             case 'long':
             case 'int':
             case 'unsigned int':
-                $string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->long().\"\\n\";\n";
+                $string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->long() . \"\\n\");\n";
                 break;
 			case 'int64':
-				$string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->int64().\"\\n\";\n";
+				$string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->int64() . \"\\n\");\n";
 				break;
 			case 'float':
-				$string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->long().\"\\n\";\n";
+				$string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->long() . \"\\n\");\n";
 				break;
             case 'unsigned char':
             case 'char':
             case 'bool':
-                $string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->bytr().\"\\n\";\n";
+                $string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->bytr() . \"\\n\");\n";
                 if(@$m[4])
-                    $string = "\t\techo \"\$parser->nl $m[3]=\".\$parser->string($m[4]).\"\\n\";\n";
+                    $string = "\t\t\$parser->echo_save(\$parser->nl . \"$m[3]=\".\$parser->string($m[4]) . \"\\n\");\n";
                 break;
         }
         fwrite($outtxt, $string);

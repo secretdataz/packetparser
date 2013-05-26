@@ -7394,7 +7394,9 @@ struct PACKET_CH_SECOND_PASSWD_ACK {
 // packet 0x8b9
 struct PACKET_HC_SECOND_PASSWD_LOGIN {
   /* this+0x0 */ short PacketType
-  /* this+0x2 */ unsigned short Result
+  /* this+0x2 */ unsigned long Seed
+  /* this+0x6 */ unsigned long AID
+  /* this+0xa */ unsigned short Result
 }
 
 // packet 0x8ba
@@ -8234,6 +8236,21 @@ struct PACKET_ZC_ACK_BEFORE_WORLD_INFO {
   /* this+0x2 */ char WorldName[24]
   /* this+0x1a */ char CharName[24]
 }
+
+// packet 0x97a
+struct PACKET_ZC_ALL_QUEST_LIST2 {
+  /* this+0x0 */ short PacketType
+  /* this+0x2 */ short PacketLength
+  /* this+0x4 */ int QuestCount
+  /* this+0x8 */ struct ALL_QUEST_LIST2_INFO QuestInfo[...] { // Size 15
+    /* this+0x0 */ unsigned long questID
+    /* this+0x4 */ bool active
+    /* this+0x5 */ long quest_svrTime
+    /* this+0x9 */ long quest_endTime
+    /* this+0xd */ short hunting_count
+  }
+}
+
 
 // packet 0x97b
 struct PACKET_ZC_PERSONAL_INFOMATION2 {

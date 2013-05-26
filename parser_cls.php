@@ -1,6 +1,6 @@
 <?php
 // Ragnarok Packet Analyzer Class
-// Yommy 2011 <3
+// Yommy 2013 <3
 
 class parser {
 	// Packet being parsed
@@ -27,8 +27,25 @@ class parser {
 	public $aid_packet = false;
 	public $nl = "|     |     |      |                                                    |";
 	public $br = "|.....|.....|......|....................................................|...............................\n";
+	
+	// logging
+	public $console_log;
+	public $packet_log;
+	public $debug = true;
+	
+	// encryption
+	public $enc_state = 0;
+	public $enc_key1;
+	public $enc_key2;
+	public $enc_key3;
+	
+	
 
 	function __construct() {
+		$this->console_log = fopen("output_log/".date("Ymd-Gis").".txt", "w+");
+		if($this->debug)
+			$this->packet_log  = fopen("debug/".date("Ymd-Gis").".txt", "w+");
+		
 		// Load Packet Info
 		$this->load_data("./data/packet/func.txt",		"p_funcs");
 		$this->load_plen();
@@ -45,11 +62,16 @@ class parser {
 		$this->load_mode();
 	}
 
+	function echo_save($text){
+		echo $text;
+		fwrite($this->console_log, $text);
+	}
+	
 	function end_packet() {
 		if($this->packet_pointer < $this->packet_length) {
 			$extra_bytes = $this->packet_length - $this->packet_pointer;
 			// should be output from mode/*.php
-			echo "$this->nl $extra_bytes bytes not analyzed\n";
+			$this->echo_save("$this->nl $extra_bytes bytes not analyzed\n");
 		}
 	}
 	function load_data($filename, $arr) {
@@ -63,7 +85,7 @@ class parser {
 		}
 		fclose($txtfile);
 		$totaltime = microtime(true) - $starttime;
-		echo str_pad("load_data($filename)", 34, " ")." Time: " . round($totaltime, 3) . "s\n";
+		$this->echo_save(str_pad("load_data($filename)", 34, " ")." Time: " . round($totaltime, 3) . "s\n");
 	}
 	
 	function load_plen() {
@@ -99,13 +121,13 @@ class parser {
 		$shuffle[28] = "PACKET_CZ_COMMAND_MER";
 		$shuffle[29] = "PACKET_CZ_ACK_STORE_PASSWORD";
 	
-		echo "\nPacket Length Tables -\n";
+		$this->echo_save("\nPacket Length Tables -\n");
 		$lengths = glob("./data/packet/{plen*.txt,recvpackets*.txt}", GLOB_BRACE);
 		if (sizeof($lengths) == 0) {
 			die("Place packet lengths inside the data/packet folder\n");
 		}
 		foreach ($lengths as $i => $length) {
-			echo " " . $i . ": " . basename($length,".txt") . "\r\n";
+			$this->echo_save(" " . $i . ": " . basename($length,".txt") . "\r\n");
 		}
 		fwrite(STDOUT, "\nWhich plen to use? ");
 		$choice = trim(fgets(STDIN));
@@ -121,18 +143,19 @@ class parser {
 					$this->p_lens[$regs[1]] = trim($regs[2]);
 					if($shuffle_id && $shuffle_id < 30){
 						$this->p_funcs[$regs[1]] = trim($shuffle[$shuffle_id]);
-						echo "Re-Mapped $regs[1] to $shuffle[$shuffle_id]\r\n";
+						//$this->echo_save("Re-Mapped $regs[1] to $shuffle[$shuffle_id]\r\n");
 						$shuffle_id++;
 					}
 				}
 				
 				if(preg_match('/## New Table ##/', $line, $regs)) {
 					$shuffle_id = 1;
+					$this->echo_save("ReMapping Shuffled ID's\r\n");
 				}
 			}
 			fclose($txtfile);
 			$totaltime = microtime(true) - $starttime;
-			echo str_pad("load_plen($length)", 34, " ")." Time: " . round($totaltime, 3) . "s\n";
+			$this->echo_save(str_pad("load_plen($length)", 34, " ")." Time: " . round($totaltime, 3) . "s\n");
 			
 		} else {
 			die("Bad choice\n");
@@ -140,12 +163,12 @@ class parser {
 	}
 	
 	function load_pac(){
-		echo "\nWPE Packet Captures -\n";
+		$this->echo_save("\nWPE Packet Captures -\n");
 		$pacs = glob("./pacs/*.pac");
 		if (sizeof($pacs) == 0)
 			die("Place packet captures inside the pacs folder\n");
 		foreach ($pacs as $i => $pac) {
-			echo $i . ": " . basename($pac) . "\n";
+			$this->echo_save($i . ": " . basename($pac) . "\n");
 		}
 		fwrite(STDOUT, "\nParse which capture? ");
 		$choice = trim(fgets(STDIN));
@@ -157,12 +180,12 @@ class parser {
 	}
 	
 	function load_wireshark(){
-		echo "\nWireShark Packet Captures -\n";
+		$this->echo_save("\nWireShark Packet Captures -\n");
 		$pacs = glob("./wireshark/*.txt");
 		if (sizeof($pacs) == 0)
 			die("Place packet captures inside the wireshark folder\n");
 		foreach ($pacs as $i => $pac) {
-			echo $i . ": " . basename($pac) . "\n";
+			$this->echo_save($i . ": " . basename($pac) . "\n");
 		}
 		fwrite(STDOUT, "\nParse which capture? ");
 		$choice = trim(fgets(STDIN));
@@ -174,13 +197,13 @@ class parser {
 	}
 	
 	function load_mode() {
-		echo "\nPacket Analyze Modes -\n";
+		$this->echo_save("\nPacket Analyze Modes -\n");
 		$modes = glob("./mode/*.php");
 		if (sizeof($modes) == 0) {
 			die("Place modes inside the mode folder\n");
 		}
 		foreach ($modes as $i => $mode) {
-			echo " " . $i . ": " . basename($mode,".php") . "\r\n";
+			$this->echo_save(" " . $i . ": " . basename($mode,".php") . "\r\n");
 		}
 		fwrite(STDOUT, "\nWhich mode to use? ");
 		$choice = trim(fgets(STDIN));
@@ -303,14 +326,38 @@ class parser {
 		}
 	}
 	
+	function decryptMessageID($messageID){
+		// saving last information for debug log
+		$oldmid = $messageID;
+		$oldkey = ($this->key1 >> 16) & 0x7FFF;
+		
+		// calculating the encryption key
+		$messageID = hexdec($messageID);
+		$this->key1 = (($this->key1 * $this->key3) + $this->key2) & 0xFFFFFFFF;
+		
+		// xoring the message id
+		$messageID = ($messageID ^ (($this->key1 >> 16) & 0x7FFF)) & 0xFFFF;
+		
+		$messageID = strtoupper(str_pad(dechex($messageID),4,"0",STR_PAD_LEFT)); // sting format to allow array lookup
+		$this->echo_save("$this->nl Encrypted MID : $oldmid -> $messageID \n");
+		return $messageID;
+	}
+	
 	function parse_stream() {
 		// Get packet Direction from begining of stream
+		if($this->debug) {
+			fwrite($this->packet_log, bin2hex($this->stream) . "\n");
+		}
 		if(substr($this->stream,0,2) == "RR") {
 			$this->packet_dir = "R";
 			$this->stream = substr($this->stream,2);
+			if(!strlen($this->stream))
+				return;
 		} elseif(substr($this->stream,0,2) == "SS") {
 			$this->packet_dir = "S";
 			$this->stream = substr($this->stream,2);
+			if(!strlen($this->stream))
+				return;
 		}
 		// Check for a partial packet from previous stream
 		if($this->prev_packet && $this->packet_dir == $this->prev_packet_dir) {
@@ -326,20 +373,18 @@ class parser {
 			// take packet id from packet, and format for array lookup
 			$this->packet_id = str_pad(strtoupper(dechex($this->unpack2("S", $this->stream))),4,"0",STR_PAD_LEFT);
 			
-			// These should never happen ( test this )
-			// next packet is Server -> Client
+			// next packet is ZC
 			if($this->packet_id == "5252") { // RR
 				$this->packet_dir = "R";
 				$this->stream = substr($this->stream, 2);
 				continue;
 			}
-			// next packet is Client -> Server
+			// next packet is CZ
 			if($this->packet_id == "5353") { // SS
 				$this->packet_dir = "S";
 				$this->stream = substr($this->stream, 2);
 				continue;
 			}
-			
 			// catch this stupid Account ID aegis sends
 			if(!$this->aid_packet && $this->aid && $this->unpack2("L", $this->stream) == $this->aid) {
 				if(function_exists('PP_AEGIS_GID')) {
@@ -351,9 +396,25 @@ class parser {
 			}
 			// Store Account_ID for checking
 			if(!$this->aid && $this->packet_id == "0069") {
-				//echo "AccountID got from 0069\n";
 				$this->aid = $this->unpack2("@8/L", $this->stream);
 			}
+			
+			if($this->enc_state && $this->packet_dir == "S") {
+				$this->packet_id = $this->decryptMessageID($this->packet_id);
+			}
+			
+			if(!$this->enc_state && $this->packet_id == "0071") {
+				//$key1 = $this->unpack2("@14/L", $this->stream);
+				//$key2 = $this->unpack2("@10/L", $this->stream);
+				//$this->initialize_message_id_encryption($key1, $key2);
+				$this->key1 = 498822262;
+				$this->key2 = 1768126699;
+				$this->key3 = 1868856914;
+				$this->enc_state = 1;
+				$this->echo_save("$this->nl Encryption Started\n");
+			}
+			
+			
 			// ####
 			if(array_key_exists($this->packet_id, $this->p_lens)) {
 				$this->packet_length = $this->p_lens[$this->packet_id];
@@ -375,9 +436,6 @@ class parser {
 				// copy and remove single packet from stream
 				$this->packet = substr($this->stream,0,$this->packet_length);
 				$this->stream = substr($this->stream,$this->packet_length);
-				if($this->mode["debug"]) {
-					fwrite($this->debug, bin2hex($this->packet) . "\n");
-				}
 				
 				if(!array_key_exists($this->packet_id, $this->p_funcs)) {
 					$this->p_funcs[$this->packet_id] = "PP_FUNC_NOT_DEFINED";
