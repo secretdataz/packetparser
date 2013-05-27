@@ -39,6 +39,10 @@ class parser {
 	public $enc_key2;
 	public $enc_key3;
 	
+	public $enc_key1_; // original keys
+	public $enc_key2_;
+	public $enc_key3_;
+	
 	
 
 	function __construct() {
@@ -139,6 +143,7 @@ class parser {
 			
 			while (!feof($txtfile)) {
 				$line = fgets($txtfile);
+				
 				if(preg_match('/(.*),(.*)/', $line, $regs)) {
 					$this->p_lens[$regs[1]] = trim($regs[2]);
 					if($shuffle_id && $shuffle_id < 30){
@@ -150,7 +155,14 @@ class parser {
 				
 				if(preg_match('/## New Table ##/', $line, $regs)) {
 					$shuffle_id = 1;
-					$this->echo_save("ReMapping Shuffled ID's\r\n");
+					$this->echo_save(" -= Re-Mapped Shuffled Packet_ID's =-\r\n");
+				}
+				
+				if (preg_match('/Encryption:(.*),(.*),(.*);/s', $line, $regs)) {
+					$this->echo_save(" -= Packet_ID Encryption Keys Loaded =-\r\n");
+					$this->enc_key1_ = hexdec($regs[1]);
+					$this->enc_key2_ = hexdec($regs[2]);
+					$this->enc_key3_ = hexdec($regs[3]);
 				}
 			}
 			fclose($txtfile);
@@ -329,14 +341,14 @@ class parser {
 	function decryptMessageID($messageID){
 		// saving last information for debug log
 		$oldmid = $messageID;
-		$oldkey = ($this->key1 >> 16) & 0x7FFF;
+		$oldkey = ($this->enc_key1 >> 16) & 0x7FFF;
 		
 		// calculating the encryption key
 		$messageID = hexdec($messageID);
-		$this->key1 = (($this->key1 * $this->key3) + $this->key2) & 0xFFFFFFFF;
+		$this->enc_key1 = ($this->enc_key1 * $this->enc_key2 + $this->enc_key3) & 0xFFFFFFFF;
 		
 		// xoring the message id
-		$messageID = ($messageID ^ (($this->key1 >> 16) & 0x7FFF)) & 0xFFFF;
+		$messageID = ($messageID ^ (($this->enc_key1 >> 16) & 0x7FFF)) & 0xFFFF;
 		
 		$messageID = strtoupper(str_pad(dechex($messageID),4,"0",STR_PAD_LEFT)); // sting format to allow array lookup
 		$this->echo_save("$this->nl Encrypted MID : $oldmid -> $messageID \n");
@@ -404,12 +416,9 @@ class parser {
 			}
 			
 			if(!$this->enc_state && $this->packet_id == "0071") {
-				//$key1 = $this->unpack2("@14/L", $this->stream);
-				//$key2 = $this->unpack2("@10/L", $this->stream);
-				//$this->initialize_message_id_encryption($key1, $key2);
-				$this->key1 = 498822262;
-				$this->key2 = 1768126699;
-				$this->key3 = 1868856914;
+				$this->enc_key1 = $this->enc_key1_;
+				$this->enc_key2 = $this->enc_key2_;
+				$this->enc_key3 = $this->enc_key3_;
 				$this->enc_state = 1;
 				$this->echo_save("$this->nl Encryption Started\n");
 			}

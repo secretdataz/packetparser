@@ -47,8 +47,8 @@ ini_set("display_errors", 1);
             echo "Failed in part 1";
             return false;
         }
-		echo dechex($offset) . "#";
-        $fp = fopen("plens\\" . basename($clients[$choice], ".exe") . ".txt", 'w');
+		echo "\r\npacket Length @ " . dechex($offset) . "#\r\n";
+        $fp = fopen("plens\\recvpackets_" . basename($clients[$choice], ".exe") . ".txt", 'w');
         fwrite($fp,"Extracted With DiffGen2\n\n");
 
         // time to walk some code
@@ -169,6 +169,7 @@ ini_set("display_errors", 1);
 				echo "Failed in part 2";
 				return false;
 			}
+			echo "New Table @ " . dechex($offset) . "#\r\n";
 			fwrite($fp, "\n\n## New Table ##\n\n");
 		// time to walk some code
         $ptr = 0;
@@ -276,5 +277,24 @@ ini_set("display_errors", 1);
             }
         }
 		}
+		// read some encryption keys
+		$code = "\x68\xAB\xAB\xAB\xAB". // key 1
+				"\x68\xAB\xAB\xAB\xAB". // key 2
+				"\x68\xAB\xAB\xAB\xAB". // key 3
+				"\xE8\x20\xAB\xAB\xAB"; // call to init
+		
+		$offset = $exe->code($code, "\xAB");
+        if ($offset === false) {
+            echo "Failed in part 3";
+            return false;
+        }
+		
+		echo "Encryption Keys @ " . dechex($offset) . "#\r\n\r\n";
+		$key3 = dechex($exe->read($offset + 1, 4, "L"));
+		$key2 = dechex($exe->read($offset + 6, 4, "L"));
+		$key1 = dechex($exe->read($offset + 11, 4, "L"));
+		
+		fwrite($fp, "\r\n\r\nEncryption:0x$key1,0x$key2,0x$key3;\r\n");
+		
         fclose($fp);
 ?>
