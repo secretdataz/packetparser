@@ -13,14 +13,18 @@ echo "         Yommys Amazing Ragnarok Packet Analyzer Framework\n\n";
 
 echo "Which source of packets?\n";
 echo " 1: Live Network Capture\n";
+echo " - Packet Capture\n";
 echo " 2: WPE .pac file\n";
 echo " 3: WireShark k12\n";
+echo " 4: PacketParser Debug Log\n";
 fwrite(STDOUT, "\nwhich source of packets? ");
 $source = trim(fgets(STDIN));
 
-$parser = new parser();
+
 
 if($source == "1"){
+	$parser = new parser();
+	
 	// ########  Socket System  #######
 	$connected = false;		// socket connected
 	$listening = true;		// socket listening
@@ -60,8 +64,10 @@ if($source == "1"){
 		}
 	}
 } elseif($source == "2"){
+	$parser = new parser();
+	
 	// ########  WPE System  #######
-	$capture 		= $parser->load_pac();
+	$capture 		= $parser->load_input("pacs", "*.pac", "WPE");
 	$file           = file_get_contents($capture);
 	if(function_exists('PP_ENTRY_TEXT')) {
 		echo PP_ENTRY_TEXT($parser);
@@ -92,7 +98,9 @@ if($source == "1"){
 		$parser->parse_stream();
 	}
 } elseif($source == "3"){
-	$capture 		= $parser->load_wireshark();
+	$parser = new parser(false);
+	// ######## WireShark System  #######
+	$capture 		= $parser->load_input("wireshark", "*.txt", "WireShark");
 	$file           = fopen($capture, "r");
 	if(function_exists('PP_ENTRY_TEXT')) {
 		echo PP_ENTRY_TEXT($parser);
@@ -104,6 +112,24 @@ if($source == "1"){
 				$parser->stream = pack("H*", $line);
 				$parser->parse_stream();
 			}
+		}
+	}
+} elseif($source == "4"){
+	$parser = new parser(false);
+	// ########  PacketParser System  #######
+	$capture 		= $parser->load_input("debug", "*.txt", "PacketParser");
+	$file           = fopen($capture, "r");
+	if(function_exists('PP_ENTRY_TEXT')) {
+		echo PP_ENTRY_TEXT($parser);
+	}
+	if($file){
+		while (($line = fgets($file, 4096)) !== false) {
+			//if(strlen(trim($line)) > 168){
+				//$line = str_replace("|","",trim(substr($line, 168)));
+				$line = trim($line);
+				$parser->stream = pack("H*", $line);
+				$parser->parse_stream();
+			//}
 		}
 	}
 }

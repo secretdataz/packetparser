@@ -45,8 +45,9 @@ class parser {
 	
 	
 
-	function __construct() {
+	function __construct($debug = true) {
 		$this->console_log = fopen("output_log/".date("Ymd-Gis").".txt", "w+");
+		$this->debug = $debug;
 		if($this->debug)
 			$this->packet_log  = fopen("debug/".date("Ymd-Gis").".txt", "w+");
 		
@@ -174,35 +175,18 @@ class parser {
 		}
 	}
 	
-	function load_pac(){
-		$this->echo_save("\nWPE Packet Captures -\n");
-		$pacs = glob("./pacs/*.pac");
-		if (sizeof($pacs) == 0)
-			die("Place packet captures inside the pacs folder\n");
-		foreach ($pacs as $i => $pac) {
-			$this->echo_save($i . ": " . basename($pac) . "\n");
+	function load_input($folder, $file, $name) {
+		$this->echo_save("\n$name Packet Captures -\n");
+		$caps = glob("./$folder/$file");
+		if (sizeof($caps) == 0)
+			die("Place packet captures inside the $folder folder\n");
+		foreach ($caps as $i => $cap) {
+			$this->echo_save($i . ": " . basename($cap) . "\n");
 		}
 		fwrite(STDOUT, "\nParse which capture? ");
 		$choice = trim(fgets(STDIN));
-		if (isset($pacs[$choice])) {
-			return $pacs[$choice];
-		} else {
-			die("Bad choice\n");
-		}
-	}
-	
-	function load_wireshark(){
-		$this->echo_save("\nWireShark Packet Captures -\n");
-		$pacs = glob("./wireshark/*.txt");
-		if (sizeof($pacs) == 0)
-			die("Place packet captures inside the wireshark folder\n");
-		foreach ($pacs as $i => $pac) {
-			$this->echo_save($i . ": " . basename($pac) . "\n");
-		}
-		fwrite(STDOUT, "\nParse which capture? ");
-		$choice = trim(fgets(STDIN));
-		if (isset($pacs[$choice])) {
-			return $pacs[$choice];
+		if (isset($caps[$choice])) {
+			return $caps[$choice];
 		} else {
 			die("Bad choice\n");
 		}
