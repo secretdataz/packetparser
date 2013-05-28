@@ -67,7 +67,7 @@ if($source == "1"){
 	$parser = new parser();
 	
 	// ########  WPE System  #######
-	$capture 		= $parser->load_input("pacs", "*.pac", "WPE");
+	$capture 		= $parser->load_input("captures/wpe", "*.pac", "WPE");
 	$file           = file_get_contents($capture);
 	if(function_exists('PP_ENTRY_TEXT')) {
 		echo PP_ENTRY_TEXT($parser);
@@ -100,7 +100,7 @@ if($source == "1"){
 } elseif($source == "3"){
 	$parser = new parser(false);
 	// ######## WireShark System  #######
-	$capture 		= $parser->load_input("wireshark", "*.txt", "WireShark");
+	$capture 		= $parser->load_input("captures/wireshark_k12", "*.txt", "WireShark");
 	$file           = fopen($capture, "r");
 	if(function_exists('PP_ENTRY_TEXT')) {
 		echo PP_ENTRY_TEXT($parser);
@@ -117,7 +117,7 @@ if($source == "1"){
 } elseif($source == "4"){
 	$parser = new parser(false);
 	// ########  PacketParser System  #######
-	$capture 		= $parser->load_input("debug", "*.txt", "PacketParser");
+	$capture 		= $parser->load_input("captures/packetparser", "*.txt", "PacketParser");
 	$file           = fopen($capture, "r");
 	if(function_exists('PP_ENTRY_TEXT')) {
 		echo PP_ENTRY_TEXT($parser);

@@ -46,10 +46,10 @@ class parser {
 	
 
 	function __construct($debug = true) {
-		$this->console_log = fopen("output_log/".date("Ymd-Gis").".txt", "w+");
+		$this->console_log = fopen("output/output_log/".date("Y-m-d_G-i-s").".txt", "w+");
 		$this->debug = $debug;
 		if($this->debug)
-			$this->packet_log  = fopen("debug/".date("Ymd-Gis").".txt", "w+");
+			$this->packet_log  = fopen("captures/packetparser/".date("Y-m-d_G-i-s").".txt", "w+");
 		
 		// Load Packet Info
 		$this->load_data("./data/packet/func.txt",		"p_funcs");
