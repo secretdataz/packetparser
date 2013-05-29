@@ -46,10 +46,10 @@ class parser {
 	
 
 	function __construct($debug = true) {
-		$this->console_log = fopen("output/output_log/".date("Y-m-d_G-i-s").".txt", "w+");
+		$this->console_log = fopen("output/output_log/".date("Y-m-d_H-i-s").".txt", "w+");
 		$this->debug = $debug;
 		if($this->debug)
-			$this->packet_log  = fopen("captures/packetparser/".date("Y-m-d_G-i-s").".txt", "w+");
+			$this->packet_log  = fopen("captures/packetparser/".date("Y-m-d_H-i-s").".txt", "w+");
 		
 		// Load Packet Info
 		$this->load_data("./data/packet/func.txt",		"p_funcs");
@@ -329,13 +329,16 @@ class parser {
 		
 		// calculating the encryption key
 		$messageID = hexdec($messageID);
-		$this->enc_key1 = ($this->enc_key1 * $this->enc_key2 + $this->enc_key3) & 0xFFFFFFFF;
 		
+		$this->enc_key1 = bcand($this->enc_key3 + bcand(bcmul($this->enc_key1,$this->enc_key2), 0xffffffff), 0xffffffff) + 0;
+		
+		//$this->echo_save("$this->nl ".dechex($this->enc_key1)." ".dechex($this->enc_key2)." ".dechex($this->enc_key3)."\n");
+		$newkey = ($this->enc_key1 >> 16) & 0x7FFF;
 		// xoring the message id
-		$messageID = ($messageID ^ (($this->enc_key1 >> 16) & 0x7FFF)) & 0xFFFF;
+		$messageID = ($messageID ^ ($newkey)) & 0xFFFF;
 		
 		$messageID = strtoupper(str_pad(dechex($messageID),4,"0",STR_PAD_LEFT)); // sting format to allow array lookup
-		$this->echo_save("$this->nl Encrypted MID : $oldmid -> $messageID \n");
+		//$this->echo_save("$this->nl Encrypted MID : ".dechex($oldkey).",".dechex($newkey)."  $oldmid,$messageID \n");
 		return $messageID;
 	}
 	
@@ -404,7 +407,7 @@ class parser {
 				$this->enc_key2 = $this->enc_key2_;
 				$this->enc_key3 = $this->enc_key3_;
 				$this->enc_state = 1;
-				$this->echo_save("$this->nl Encryption Started\n");
+				$this->echo_save("$this->nl Encryption Started ".dechex($this->enc_key1)." ".dechex($this->enc_key2)." ".dechex($this->enc_key3)."\n");
 			}
 			
 			
@@ -462,4 +465,7 @@ class parser {
 		}
 	}
 }
+
+
+
 ?>

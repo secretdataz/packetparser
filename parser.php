@@ -1,5 +1,5 @@
 <?php
-date_default_timezone_set('Asia/Seoul');
+//date_default_timezone_set('Asia/Seoul');
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
@@ -133,6 +133,110 @@ if($source == "1"){
 		}
 	}
 }
+
+
+
+// php must be the worst language for handling values
+
+function bcand($x, $y)
+{
+       return _bcbitwise_internal($x, $y, '_bcand');
+}
+function _bcand($x, $y)
+{
+       return $x & $y;
+}
+function _bcbitwise_internal($x, $y, $op)
+{
+       $bx = bc2bin($x);
+       $by = bc2bin($y);
+
+       // Pad $bx and $by so that both are the same length.
+
+       equalbinpad($bx, $by);
+
+       $ix=0;
+       $ret = '';
+
+       for($ix = 0; $ix < strlen($bx); $ix++)
+       {
+               $xd = substr($bx, $ix, 1);
+               $yd = substr($by, $ix, 1);
+               $ret .= call_user_func($op, $xd, $yd);
+       }
+
+       return bin2bc($ret);
+}
+function equalbinpad(&$x, &$y)
+{
+       $xlen = strlen($x);
+         $ylen = strlen($y);
+
+       $length = max($xlen, $ylen);
+         fixedbinpad($x, $length);
+       fixedbinpad($y, $length);
+}
+function fixedbinpad(&$num, $length)
+{
+       $pad = '';
+       for($ii = 0; $ii < $length-strlen($num); $ii++)
+       {
+               $pad .= bc2bin('0');
+       }
+
+       $num = $pad . $num;
+}
+function bc2bin($num)
+{
+       return dec2base($num, 128);
+}
+function bin2bc($num)
+{
+       return base2dec($num, 128);
+}
+function dec2base($dec,$base,$digits=FALSE) {
+   if($base<2 or $base>256) die("Invalid Base: ".$base);
+   bcscale(0);
+   $value="";
+   if(!$digits) $digits=digits($base);
+   while($dec>$base-1) {
+       $rest=bcmod($dec,$base);
+       $dec=bcdiv($dec,$base);
+       $value=$digits[$rest].$value;
+   }
+   $value=$digits[intval($dec)].$value;
+   return (string) $value;
+}
+function base2dec($value,$base,$digits=FALSE) {
+   if($base<2 or $base>256) die("Invalid Base: ".$base);
+   bcscale(0);
+   if($base<37) $value=strtolower($value);
+   if(!$digits) $digits=digits($base);
+   $size=strlen($value);
+   $dec="0";
+   for($loop=0;$loop<$size;$loop++) {
+       $element=strpos($digits,$value[$loop]);
+       $power=bcpow($base,$size-$loop-1);
+       $dec=bcadd($dec,bcmul($element,$power));
+   }
+   return (string) $dec;
+}
+function digits($base) {
+   if($base>64) {
+       $digits="";
+       for($loop=0;$loop<256;$loop++) {
+           $digits.=chr($loop);
+       }
+   } else {
+       $digits ="0123456789abcdefghijklmnopqrstuvwxyz";
+       $digits.="ABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+   }
+   $digits=substr($digits,0,$base);
+   return (string) $digits;
+}
+
+
+
 
 
 
