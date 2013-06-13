@@ -8467,7 +8467,7 @@ struct PACKET_ZC_INVENTORY_ITEMLIST_NORMAL_V5 {
 struct PACKET_ZC_INVENTORY_ITEMLIST_EQUIP_V5 {
   /* this+0x0 */ short PacketType
   /* this+0x2 */ short PacketLength
-  /* this+0x4 */ struct ITEMLIST_EQUIP_ITEM Items[...] { // Size 27
+  /* this+0x4 */ struct ITEMLIST_EQUIP_ITEM Items[...] { // Size 31
     /* this+0x0 */ short index
     /* this+0x2 */ unsigned short ITID
     /* this+0x4 */ unsigned char type
@@ -8512,7 +8512,7 @@ struct PACKET_ZC_CART_ITEMLIST_NORMAL_V5 {
 struct PACKET_ZC_CART_ITEMLIST_EQUIP_V5 {
   /* this+0x0 */ short PacketType
   /* this+0x2 */ short PacketLength
-  /* this+0x4 */ struct ITEMLIST_EQUIP_ITEM Items[...] { // Size 27
+  /* this+0x4 */ struct ITEMLIST_EQUIP_ITEM Items[...] { // Size 31
     /* this+0x0 */ short index
     /* this+0x2 */ unsigned short ITID
     /* this+0x4 */ unsigned char type

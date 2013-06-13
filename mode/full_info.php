@@ -7662,7 +7662,7 @@ function PACKET_ZC_INVENTORY_ITEMLIST_NORMAL_V5($parser) {
 // packet 0x992
 function PACKET_ZC_INVENTORY_ITEMLIST_EQUIP_V5($parser) {
 	$parser->echo_save($parser->packet_desc . "PacketLength=".$parser->word() . "\n");
-	$Items = ($parser->packet_length - $parser->packet_pointer) / 27;
+	$Items = ($parser->packet_length - $parser->packet_pointer) / 31;
 	for ($i = 0; $i < $Items; $i++) {
 		$parser->echo_save($parser->nl . "index=".$parser->word() . "\n");
 		$parser->echo_save($parser->nl . "ITID=".$parser->word() . "\n");
@@ -7703,7 +7703,7 @@ function PACKET_ZC_CART_ITEMLIST_NORMAL_V5($parser) {
 // packet 0x994
 function PACKET_ZC_CART_ITEMLIST_EQUIP_V5($parser) {
 	$parser->echo_save($parser->packet_desc . "PacketLength=".$parser->word() . "\n");
-	$Items = ($parser->packet_length - $parser->packet_pointer) / 27;
+	$Items = ($parser->packet_length - $parser->packet_pointer) / 31;
 	for ($i = 0; $i < $Items; $i++) {
 		$parser->echo_save($parser->nl . "index=".$parser->word() . "\n");
 		$parser->echo_save($parser->nl . "ITID=".$parser->word() . "\n");
@@ -8002,5 +8002,4 @@ function PACKET_CZ_OPEN_BARGAIN_SALE_TOOL($parser) {
 function PACKET_ZC_OPEN_BARGAIN_SALE_TOOL($parser) {
 	$parser->echo_save($parser->packet_desc . "\n");
 }
-
 ?>
