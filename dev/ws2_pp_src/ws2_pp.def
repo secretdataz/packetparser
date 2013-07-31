@@ -1,0 +1,22 @@
+LIBRARY WS2_32
+EXPORTS
+    closesocket                         @3
+    connect                             @4
+    htonl                               @8
+    htons                               @9
+    ioctlsocket                         @10
+    inet_addr                           @11
+    inet_ntoa                           @12
+    ntohl                               @14
+    ntohs                               @15
+    recv                                @16
+    select                              @18
+    send                                @19
+    sendto                              @20
+    setsockopt                          @21
+    socket                              @23
+    gethostbyname                       @52
+    gethostname                         @57
+    WSAGetLastError                     @111
+    WSAStartup                          @115
+    WSACleanup                          @116

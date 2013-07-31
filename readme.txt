@@ -17,10 +17,12 @@ Packet_Parser
 |   parser.php              -- main script, listens for socket data from ws2_pp.dll OR reads packet_captures, and pushes to extracter
 |   parser_cls.php          -- Core Parser file, resposible for extracting packet data
 |   readme.txt              -- This file
+|
 +---captures
 |   +---wpe                 -- WPE *.pac packet captures
 |   +---wireshark_k12       -- WireShark k12 packet capture format
 |   \---PacketParser        -- PacketParser Captures automatically created when using realtime mode
+|
 +---data
 |   +---enum
 |   |       efst.txt        -- Status Effects

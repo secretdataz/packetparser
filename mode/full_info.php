@@ -19,6 +19,10 @@ function PP_FUNC_NOT_DEFINED($parser) {
 	$parser->echo_save($parser->packet_desc . "\n");
 }
 
+function PP_ENCRYPTION_STARTED($parser, $mes) {
+	$parser->echo_save($mes);
+}
+
 function PP_AEGIS_GID($parser) {
 	if(!$parser->packet_dir) {
 		$parser->packet_dir = " ";

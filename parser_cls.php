@@ -407,7 +407,9 @@ class parser {
 				$this->enc_key2 = $this->enc_key2_;
 				$this->enc_key3 = $this->enc_key3_;
 				$this->enc_state = 1;
-				$this->echo_save("$this->nl Encryption Started ".dechex($this->enc_key1)." ".dechex($this->enc_key2)." ".dechex($this->enc_key3)."\n");
+				if(function_exists('PP_ENCRYPTION_STARTED')) {
+					PP_ENCRYPTION_STARTED($this, "$this->nl Encryption Started ".dechex($this->enc_key1)." ".dechex($this->enc_key2)." ".dechex($this->enc_key3)."\n");
+				}
 			}
 			
 			

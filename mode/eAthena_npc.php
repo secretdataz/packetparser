@@ -4,19 +4,14 @@
 function PP_MODE_INIT($parser) {
 	$parser->mode["mode_name"] = "eAthena_npc";	//
 	$parser->mode["extra_bytes"] = false;		// warning about extra packet data
-	$parser->mode["debug"] = true;				// write packets to file
 	$parser->mode["save_npc"] = true;
 	
 	$parser->data['talking_to_npc'] = false;
 	$parser->data['money'] = false;
 	$parser->data['indent'] = 0;
 	
-	if($parser->mode["debug"]) {
-		$debug_filename = "debug/".date("Ymd-Gis").".txt";
-		$parser->debug = fopen($debug_filename, "w+");
-	}
 	if($parser->mode["save_npc"]) {
-		$npc_filename = "npc_capture/".date("Ymd-Gis").".txt";
+		$npc_filename = "output/npc_capture/".date("Ymd-Gis").".txt";
 		$parser->npc_file = fopen($npc_filename, "w+");
 	}
 }
@@ -35,10 +30,15 @@ function PACKET_HC_NOTIFY_ZONESVR($parser) {
 
 function PACKET_ZC_SAY_DIALOG($parser){
     $gid = $parser->long(4);
-    if($parser->data['talking_to_npc'] == false){
+	if($parser->data['talking_to_npc'] == false){
         $parser->data['talking_to_npc'] = $gid;
-        echo_save($parser,"\n\n".$parser->npc_list[$gid]['map'].",".$parser->npc_list[$gid]['x'].",".$parser->npc_list[$gid]['y'].","."4"."\tscript\t".$parser->npc_list[$gid]['name']."\t".$parser->npc_list[$gid]['job'].",{");
-        echo_save($parser,"OnClick:");
+		if(!isset($parser->npc_list[$gid])){
+			echo_save($parser, "\n\n-	script	UNKNOWN_NPC_NAME	-1,{");
+			echo_save($parser,"OnPCLoginEvent:");
+		} else {
+			echo_save($parser,"\n\n".$parser->npc_list[$gid]['map'].",".$parser->npc_list[$gid]['x'].",".$parser->npc_list[$gid]['y'].","."4"."\tscript\t".$parser->npc_list[$gid]['name']."\t".$parser->npc_list[$gid]['job'].",{");
+			echo_save($parser,"OnClick:");
+		}
 		$parser->data['indent'] = $parser->data['indent'] + 1;
     }
 	$text = str_replace($parser->data["char_name"], "\"+strcharinfo(0)+\"" , $parser->string($parser->word(2)-8,8));
@@ -54,7 +54,7 @@ function PACKET_ZC_CLOSE_DIALOG($parser){
 	$parser->data['indent'] = $parser->data['indent'] - 1;
     echo_save($parser,"end;");
 	$parser->data['indent'] = $parser->data['indent'] - 1;
-	echo_save($parser,"}");
+	echo_save($parser,"}\n\n");
     $parser->data['talking_to_npc'] = false;
 }
 
@@ -72,17 +72,24 @@ function PACKET_CZ_CHOOSE_MENU($parser){
 	$parser->data['indent'] = $parser->data['indent'] + 1;
 }
 
+function PACKET_ZC_ACK_REQNAME($parser) {
+	$gid = $parser->long();
+	$name = $parser->string(24);
+	$parser->npc_list[$gid]['name'] = $name;
+	echo "### gid name resolved $gid => $name\r\n";
+}
+
 function PACKET_ZC_NOTIFY_STANDENTRY7($parser){
     $gid = $parser->long(5);
     $parser->npc_list[$gid]['GID'] = $parser->long(5);
     $parser->npc_list[$gid]['job'] = $parser->word(19);
-    $parser->npc_list[$gid]['name'] = $parser->string(24,65);
+    #$parser->npc_list[$gid]['name'] = $parser->string(24,65);
     $parser->npc_list[$gid]['map'] = $parser->data['map'];
     list($x,$y) = explode(",",$parser->xy(55));
     $parser->npc_list[$gid]['x'] = $x;
     $parser->npc_list[$gid]['y'] = $y;
-    echo "Seen NPC # ".$parser->npc_list[$gid]['name'] ." \n";
-	//print_r($parser->npc_list[$gid]);
+    echo "### Seen NPC # GID $gid \n";
+	#print_r($parser->npc_list[$gid]);
 }
 
 function PACKET_ZC_ADD_QUEST($parser) {
@@ -179,12 +186,14 @@ function PACKET_ZC_NOTIFY_EFFECT($parser) {
 	}
 }
 
-// packet 0x82d
-function PACKET_HC_ACCEPT2($parser) {
-	$charInfo = ($parser->packet_length - 29) / 116;
+// packet 0x6b
+function PACKET_HC_ACCEPT_ENTER_NEO_UNION($parser) {
+	$charInfo = ($parser->packet_length - 27) / 144;
+	#echo $charInfo;
 	for ($i = 0; $i < $charInfo; $i++) {
-		$parser->data["char_name_$i"] = $parser->string(24,$i*116+107);
+		$parser->data["char_name_$i"] = $parser->string(24,$i*144+105);
 	}
+	#print_r($parser->data);
 }
 
 // packet 0x66
