@@ -288,10 +288,12 @@ ini_set("display_errors", 1);
 			}
 		}
 		// read some encryption keys
-		$code = "\x68\xAB\xAB\xAB\xAB". // key 1
+		$code = "\x02".//prefix for finding - part of earlier instruction
+				"\x68\xAB\xAB\xAB\xAB". // key 1
 				"\x68\xAB\xAB\xAB\xAB". // key 2
 				"\x68\xAB\xAB\xAB\xAB". // key 3
-				"\xE8\x20\xAB\xAB\xAB"; // call to init
+				"\xE8\xAB\xAB\xAB\xAB". // call to init
+				"\x8B\xC8"; //mov ecx, eax
 		
 		$offset = $exe->code($code, "\xAB");
         if ($offset === false) {
